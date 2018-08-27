@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="sys_app_module">
+    <sys_app_module action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <application display_value="Idea Box">c8aa24d90f013100c8badf2be1050e59</application>
+        <assessment/>
+        <content_page/>
+        <device_type/>
+        <filter table="sys_script_include">sys_scope=af5a68590f013100c8badf2be1050ef5^EQ<item display_table="sys_scope" display_value="Idea Box" endquery="false" field="sys_scope" goto="false" newquery="false" operator="=" or="false" value="af5a68590f013100c8badf2be1050ef5"/>
+            <item endquery="true" field="" goto="false" newquery="false" operator="=" or="false" value=""/>
+        </filter>
+        <hint/>
+        <homepage/>
+        <image/>
+        <link_type>LIST</link_type>
+        <map_page/>
+        <mobile_title>Administration</mobile_title>
+        <mobile_view_name>Mobile</mobile_view_name>
+        <name>sys_script_include</name>
+        <order>910</order>
+        <override_menu_roles>false</override_menu_roles>
+        <query/>
+        <report/>
+        <roles>admin</roles>
+        <sys_class_name>sys_app_module</sys_class_name>
+        <sys_created_by>ben.hollifield@snc_SHARE</sys_created_by>
+        <sys_created_on>2015-09-26 15:14:01</sys_created_on>
+        <sys_domain>global</sys_domain>
+        <sys_domain_path>/</sys_domain_path>
+        <sys_id>6606d7e40f3a82007a2b778ce1050e43</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>Script Includes</sys_name>
+        <sys_overrides/>
+        <sys_package display_value="Idea Box" source="x_snc_idea_box">af5a68590f013100c8badf2be1050ef5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Idea Box">af5a68590f013100c8badf2be1050ef5</sys_scope>
+        <sys_update_name>sys_app_module_6606d7e40f3a82007a2b778ce1050e43</sys_update_name>
+        <sys_updated_by>ben.hollifield@snc_SHARE</sys_updated_by>
+        <sys_updated_on>2015-09-26 15:14:01</sys_updated_on>
+        <timeline_page/>
+        <title>Script Includes</title>
+        <uncancelable>false</uncancelable>
+        <view_name/>
+        <window_name/>
+    </sys_app_module>
+</record_update>

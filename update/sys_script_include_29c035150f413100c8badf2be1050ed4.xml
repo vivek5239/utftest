@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>public</access>
+        <active>true</active>
+        <api_name>x_snc_idea_box.ideaBoxHelper</api_name>
+        <client_callable>false</client_callable>
+        <description>Script Include to support the Idea Box application</description>
+        <name>ideaBoxHelper</name>
+        <script><![CDATA[var ideaBoxHelper = Class.create();
+ideaBoxHelper.prototype = {
+	initialize: function() {
+		this.debug = gs.getProperty('x_snc_idea_box.debug');
+		this.itemsPerPage = gs.getProperty('x_snc_idea_box.items_per_page');
+		this.boxAgeOutDays = gs.getProperty('x_snc_idea_box.box_age_out_days');
+		this.ideaAgeOutDays = gs.getProperty('x_snc_idea_box.idea_age_out_days');
+		this.allPostsOption = gs.getProperty('x_snc_idea_box.all_posts_option');
+		this.allPostsLabel = 'All Posts...';
+		this.userID = gs.getUserID();
+	},
+	
+	//Initialize box and send startup info as a JSON formatted string
+	initializeBox: function(boxID, ideaID){
+		var returnObject = {};
+		var initObject = {};
+		//If an Idea ID was passed, but no Box ID, then get parent Box ID for Idea
+		//if ((boxID == '' || boxID == null) && (ideaID != '' && ideaID != null)){
+			if (!boxID && ideaID){
+				var idea = new GlideRecord("x_snc_idea_box_idea");
+				if (idea.get(ideaID))
+					boxID = idea.box.sys_id.toString();
+			}
+			
+			//Gather initialization data for current box
+			var box = new GlideRecord("x_snc_idea_box_box");
+			if (box.get(boxID)) {
+				if (box.active == true && gs.hasRole(box.roles.getDisplayValue()) && box.canRead()){
+					initObject.box_name = this._tidyHTML(box.name.toString());
+					initObject.items_per_page = this.itemsPerPage.toString();
+					initObject.user_id = this.userID.toString();
+					initObject.can_write = box.canWrite().toString();
+					initObject.can_post = gs.hasRole(box.post_roles.getDisplayValue()).toString();
+					initObject.allow_votes = box.allow_votes.toString();
+					initObject.sys_id = box.sys_id.toString();
+					initObject.is_subscribed = this.isSubscribedBox(box, this.userID).toString();
+				}
+			}
+			else if (boxID == 'allposts'){
+				initObject.box_name = this.allPostsLabel;
+				initObject.items_per_page = this.itemsPerPage.toString();
+				initObject.user_id = this.userID.toString();
+				initObject.can_write = 'false';
+				initObject.can_post = 'true';
+				initObject.has_voting_ideas = this._hasVotingIdeas().toString();
+				initObject.sys_id = 'allposts';
+			}
+			//Gather array of all available boxes for this user
+			var boxArray = [];
+			var boxes = new GlideRecord("x_snc_idea_box_box");
+			boxes.addQuery("active", true);
+			boxes.addQuery("selectable", true);
+			boxes.addQuery("sys_id", "!=", boxID);
+			var encQuery = 'sys_updated_onONLast x days@javascript:gs.daysAgoStart(' + this.boxAgeOutDays + ')@javascript:gs.daysAgoEnd(0)';
+			boxes.addEncodedQuery(encQuery);
+			boxes.orderBy("name");
+			boxes.query();
+			while (boxes.next()) {
+				if (gs.hasRole(boxes.roles.getDisplayValue()) && boxes.canRead())
+					boxArray.push({"id":boxes.sys_id.toString(), "name":this._tidyHTML(boxes.name.toString())});
+			}
+			//Include 'All Posts' option, based on Properties
+			var allPosts = '';
+			if (this.allPostsOption == 'true'){
+				if ((boxArray.length > 0 || boxID != '') && boxID != 'allposts')
+					boxArray.unshift({"id":"allposts", "name":this.allPostsLabel});
+			}
+			returnObject.initObject = initObject;
+			returnObject.boxArray = boxArray;
+			returnString = new global.JSON().encode(returnObject);
+			
+			if (this.debug == 'true'){
+				if (returnString != '')
+					gs.info('IdeaBox: Initializing box ' + boxID + ' with init string ' + returnString);
+				else
+					gs.info('IdeaBox: No box available with ID ' + boxID);
+			}
+			
+			return returnString;
+		},
+		
+		//Return whether the given user has subscribed to the current Box
+		isSubscribedBox: function(box, userID){
+			var returnVal;
+			if (box.subscribers.toString().indexOf(userID) > -1)
+				returnVal = true;
+			else
+				returnVal = false;
+			return returnVal;
+		},
+		
+		//Return true/false, depending on if any ideas' boxes have voting enabled
+		_hasVotingIdeas: function(){
+			var returnVal;
+			var ideaBatch = new GlideRecord("x_snc_idea_box_idea");
+			var roledBoxArray = [];
+			var roledBox = new GlideRecord("x_snc_idea_box_box");
+			roledBox.query();
+			while (roledBox.next()) {
+				if (gs.hasRole(roledBox.roles.getDisplayValue()))
+					roledBoxArray.push(roledBox.sys_id.toString());
+			}
+			ideaBatch.addQuery("box", "IN", roledBoxArray.toString());
+			ideaBatch.addQuery("box.selectable", true);
+			ideaBatch.addQuery("box.active", true);
+			ideaBatch.addQuery("active", true);
+			ideaBatch.addQuery("box.allow_votes", true);
+			//add query for age-out of old posts
+			var encQuery = 'sys_updated_onONLast x days@javascript:gs.daysAgoStart(' + this.ideaAgeOutDays + ')@javascript:gs.daysAgoEnd(0)';
+			ideaBatch.addEncodedQuery(encQuery);
+			ideaBatch.query();
+			if (ideaBatch.next())
+				returnVal = 'true';
+			else
+				returnVal = 'false';
+			return returnVal;
+		},
+		
+		//Tidy HTML special characters before sending to the client
+		_tidyHTML: function(html){
+			var cleanHTML = html;
+			cleanHTML = cleanHTML.toString().replace(/(?:\r\n|\r|\n)/g, ""); //Remove carriage returns
+			//cleanHTML = cleanHTML.toString().replace(/'/g, "\\'"); //Remove apostrophes
+			cleanHTML = cleanHTML.toString().replace(/'/g, "zyx"); //Remove apostrophes
+			return cleanHTML;
+		},
+		
+		type: 'ideaBoxHelper'
+	};]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>ben.hollifield@snc_SHARE</sys_created_by>
+        <sys_created_on>2014-12-16 19:56:24</sys_created_on>
+        <sys_id>29c035150f413100c8badf2be1050ed4</sys_id>
+        <sys_mod_count>135</sys_mod_count>
+        <sys_name>ideaBoxHelper</sys_name>
+        <sys_package display_value="Idea Box" source="x_snc_idea_box">af5a68590f013100c8badf2be1050ef5</sys_package>
+        <sys_policy>protected</sys_policy>
+        <sys_scope display_value="Idea Box">af5a68590f013100c8badf2be1050ef5</sys_scope>
+        <sys_update_name>sys_script_include_29c035150f413100c8badf2be1050ed4</sys_update_name>
+        <sys_updated_by>ben.hollifield@snc_SHARE</sys_updated_by>
+        <sys_updated_on>2015-10-04 21:42:17</sys_updated_on>
+    </sys_script_include>
+</record_update>

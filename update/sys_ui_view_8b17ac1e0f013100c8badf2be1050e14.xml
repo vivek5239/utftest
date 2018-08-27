@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_ui_view">
+    <sys_ui_view action="INSERT_OR_UPDATE">
+        <group/>
+        <hidden>false</hidden>
+        <name>newbox</name>
+        <roles/>
+        <sys_class_name>sys_ui_view</sys_class_name>
+        <sys_created_by>ben.hollifield@snc_SHARE</sys_created_by>
+        <sys_created_on>2014-12-19 16:58:05</sys_created_on>
+        <sys_id>8b17ac1e0f013100c8badf2be1050e14</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>Newbox</sys_name>
+        <sys_package display_value="Idea Box" source="x_snc_idea_box">af5a68590f013100c8badf2be1050ef5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Idea Box">af5a68590f013100c8badf2be1050ef5</sys_scope>
+        <sys_update_name>sys_ui_view_8b17ac1e0f013100c8badf2be1050e14</sys_update_name>
+        <sys_updated_by>ben.hollifield@snc_SHARE</sys_updated_by>
+        <sys_updated_on>2014-12-19 16:58:05</sys_updated_on>
+        <title>Newbox</title>
+        <user/>
+    </sys_ui_view>
+</record_update>

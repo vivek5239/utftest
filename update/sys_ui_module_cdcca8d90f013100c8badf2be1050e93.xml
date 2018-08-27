@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="sys_ui_module">
+    <sys_ui_module action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <application display_value="Idea Box">41cca8d90f013100c8badf2be1050e93</application>
+        <filter/>
+        <name>Boxes</name>
+        <order/>
+        <path/>
+        <path_relative_to_root>false</path_relative_to_root>
+        <roles>itil</roles>
+        <sys_class_name>sys_ui_module</sys_class_name>
+        <sys_created_by>ben.hollifield@snc_SHARE</sys_created_by>
+        <sys_created_on>2014-12-16 14:48:52</sys_created_on>
+        <sys_domain>global</sys_domain>
+        <sys_domain_path>/</sys_domain_path>
+        <sys_id>cdcca8d90f013100c8badf2be1050e93</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>Boxes</sys_name>
+        <sys_package display_value="Idea Box" source="x_snc_idea_box">af5a68590f013100c8badf2be1050ef5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Idea Box">af5a68590f013100c8badf2be1050ef5</sys_scope>
+        <sys_update_name>sys_ui_module_cdcca8d90f013100c8badf2be1050e93</sys_update_name>
+        <sys_updated_by>ben.hollifield@snc_SHARE</sys_updated_by>
+        <sys_updated_on>2014-12-16 14:48:52</sys_updated_on>
+        <table>x_snc_idea_box_box</table>
+        <uncancelable>false</uncancelable>
+        <view_name/>
+    </sys_ui_module>
+</record_update>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_properties_category_m2m">
+    <sys_properties_category_m2m action="INSERT_OR_UPDATE">
+        <category display_value="Idea Box">8021c99d0f013100c8badf2be1050ee8</category>
+        <order>500</order>
+        <property display_value="x_snc_idea_box.box_create_roles" name="x_snc_idea_box.box_create_roles">52a6910b0f413100c8badf2be1050eba</property>
+        <sys_class_name>sys_properties_category_m2m</sys_class_name>
+        <sys_created_by>ben.hollifield@snc_SHARE</sys_created_by>
+        <sys_created_on>2014-12-22 04:30:01</sys_created_on>
+        <sys_id>a2a8d10b0f413100c8badf2be1050e4f</sys_id>
+        <sys_mod_count>3</sys_mod_count>
+        <sys_name>x_snc_idea_box.box_create_roles.Idea Box</sys_name>
+        <sys_package display_value="Idea Box" source="x_snc_idea_box">af5a68590f013100c8badf2be1050ef5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Idea Box">af5a68590f013100c8badf2be1050ef5</sys_scope>
+        <sys_update_name>sys_properties_category_m2m_a2a8d10b0f413100c8badf2be1050e4f</sys_update_name>
+        <sys_updated_by>ben.hollifield@snc_SHARE</sys_updated_by>
+        <sys_updated_on>2015-06-07 17:00:22</sys_updated_on>
+    </sys_properties_category_m2m>
+</record_update>

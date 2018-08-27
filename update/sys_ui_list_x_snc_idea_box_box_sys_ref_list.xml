@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update>
+    <sys_ui_list parent="" relationship="" sys_domain="global" table="x_snc_idea_box_box" version="2" view="sys_ref_list">
+        <sys_ui_list_element action="INSERT_OR_UPDATE">
+            <average_value>false</average_value>
+            <element>name</element>
+            <list_id display_value="x_snc_idea_box_box" element="NULL" name="x_snc_idea_box_box" parent="NULL" relationship="NULL" sys_domain="global" view="f6232273b8130300651775b34d8f5187">d0456f1544e1420002addd3ec4bf4af6</list_id>
+            <max_value>false</max_value>
+            <min_value>false</min_value>
+            <position>0</position>
+            <sum>false</sum>
+            <sys_created_by>ben.hollifield@snc_SHARE</sys_created_by>
+            <sys_created_on>2015-07-28 20:57:27</sys_created_on>
+            <sys_id>a4456f1544e1420002addd3ec4bf4af6</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>ben.hollifield@snc_SHARE</sys_updated_by>
+            <sys_updated_on>2015-07-28 20:57:27</sys_updated_on>
+        </sys_ui_list_element>
+        <sys_ui_list action="INSERT_OR_UPDATE">
+            <average_value>false</average_value>
+            <element/>
+            <max_value>false</max_value>
+            <min_value>false</min_value>
+            <name>x_snc_idea_box_box</name>
+            <parent/>
+            <position/>
+            <relationship/>
+            <sum>false</sum>
+            <sys_class_name>sys_ui_list</sys_class_name>
+            <sys_created_by>ben.hollifield@snc_SHARE</sys_created_by>
+            <sys_created_on>2015-07-28 20:57:27</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>d0456f1544e1420002addd3ec4bf4af6</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_name>x_snc_idea_box_box</sys_name>
+            <sys_package display_value="Idea Box" source="x_snc_idea_box">af5a68590f013100c8badf2be1050ef5</sys_package>
+            <sys_policy/>
+            <sys_scope display_value="Idea Box">af5a68590f013100c8badf2be1050ef5</sys_scope>
+            <sys_update_name>sys_ui_list_x_snc_idea_box_box_sys_ref_list</sys_update_name>
+            <sys_updated_by>ben.hollifield@snc_SHARE</sys_updated_by>
+            <sys_updated_on>2015-07-28 20:57:27</sys_updated_on>
+            <sys_user/>
+            <view display_value="Reference List" name="sys_ref_list">f6232273b8130300651775b34d8f5187</view>
+            <view_name/>
+        </sys_ui_list>
+    </sys_ui_list>
+</record_update>

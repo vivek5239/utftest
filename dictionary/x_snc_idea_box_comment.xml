@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?><database>
+    <element extends="x_snc_idea_box_idea" label="Comment" max_length="40" name="x_snc_idea_box_comment" type="collection">
+        <element hint="Parent post for this comment" label="Idea" max_length="32" name="idea" read_only="true" reference="x_snc_idea_box_idea" reference_cascade_rule="delete" type="reference"/>
+        <element active="false" hint="Displayed text for this comment" label="Text" max_length="4000" name="text" type="string"/>
+        <index name="index">
+            <element name="idea"/>
+        </index>
+    </element>
+</database>

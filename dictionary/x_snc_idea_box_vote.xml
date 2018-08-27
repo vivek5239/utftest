@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?><database>
+    <element label="Vote" max_length="40" name="x_snc_idea_box_vote" type="collection">
+        <element hint="Parent post or comment of this vote" label="Idea" max_length="32" name="idea" read_only="true" reference="x_snc_idea_box_idea" reference_cascade_rule="delete" type="reference"/>
+        <element default="javascript:global.getNextObjNumberPadded();" display="true" label="Number" max_length="40" name="number" read_only="true" type="string"/>
+        <element choice="1" hint="Type of vote (upvote or downvote)" label="Type" max_length="40" name="type" read_only="true" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="Upvote" sequence="0" value="upvote"/>
+                <element inactive_on_update="false" label="Downvote" sequence="1" value="downvote"/>
+            </choice>
+        </element>
+        <element hint="User who submitted this vote" label="User" max_length="32" name="user" read_only="true" reference="sys_user" type="reference"/>
+        <index name="index">
+            <element name="idea"/>
+        </index>
+        <index name="index2">
+            <element name="user"/>
+        </index>
+    </element>
+</database>

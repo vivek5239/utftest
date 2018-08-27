@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update>
+    <sys_documentation element="vote_count" label="Vote score" language="en" table="x_snc_idea_box_idea">
+        <sys_documentation action="INSERT_OR_UPDATE">
+            <element>vote_count</element>
+            <help/>
+            <hint>Vote score (upvote - downvote = score) for this post</hint>
+            <label>Vote score</label>
+            <language>en</language>
+            <name>x_snc_idea_box_idea</name>
+            <plural>Vote score</plural>
+            <sys_class_name>sys_documentation</sys_class_name>
+            <sys_created_by>ben.hollifield@snc_SHARE</sys_created_by>
+            <sys_created_on>2014-12-16 14:55:54</sys_created_on>
+            <sys_id>0c6e68d90f013100c8badf2be1050ece</sys_id>
+            <sys_mod_count>4</sys_mod_count>
+            <sys_name>Vote score</sys_name>
+            <sys_package display_value="Idea Box" source="x_snc_idea_box">af5a68590f013100c8badf2be1050ef5</sys_package>
+            <sys_policy/>
+            <sys_scope display_value="Idea Box">af5a68590f013100c8badf2be1050ef5</sys_scope>
+            <sys_update_name>sys_documentation_x_snc_idea_box_idea_vote_count_en</sys_update_name>
+            <sys_updated_by>ben.hollifield@snc_SHARE</sys_updated_by>
+            <sys_updated_on>2015-02-08 22:00:16</sys_updated_on>
+            <url/>
+            <url_target/>
+        </sys_documentation>
+    </sys_documentation>
+</record_update>

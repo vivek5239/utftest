@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update>
+    <sys_choice action="INSERT_OR_UPDATE" field="type" table="x_snc_idea_box_vote" version="3">
+        <sys_choice action="INSERT_OR_UPDATE">
+            <dependent_value/>
+            <element>type</element>
+            <hint/>
+            <inactive>false</inactive>
+            <label>Upvote</label>
+            <language>en</language>
+            <name>x_snc_idea_box_vote</name>
+            <sequence>0</sequence>
+            <sys_created_by>ben.hollifield@snc_SHARE</sys_created_by>
+            <sys_created_on>2014-12-16 17:42:26</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>2774d1510f413100c8badf2be1050eaf</sys_id>
+            <sys_mod_count>1</sys_mod_count>
+            <sys_updated_by>ben.hollifield@snc_SHARE</sys_updated_by>
+            <sys_updated_on>2014-12-16 17:42:36</sys_updated_on>
+            <value>upvote</value>
+        </sys_choice>
+        <sys_choice action="INSERT_OR_UPDATE">
+            <dependent_value/>
+            <element>type</element>
+            <hint/>
+            <inactive>false</inactive>
+            <label>Downvote</label>
+            <language>en</language>
+            <name>x_snc_idea_box_vote</name>
+            <sequence>1</sequence>
+            <sys_created_by>ben.hollifield@snc_SHARE</sys_created_by>
+            <sys_created_on>2014-12-16 17:42:26</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>2b74d1510f413100c8badf2be1050eaf</sys_id>
+            <sys_mod_count>3</sys_mod_count>
+            <sys_updated_by>ben.hollifield@snc_SHARE</sys_updated_by>
+            <sys_updated_on>2015-02-18 16:34:19</sys_updated_on>
+            <value>downvote</value>
+        </sys_choice>
+        <sys_choice_set action="INSERT_OR_UPDATE">
+            <element>type</element>
+            <name>x_snc_idea_box_vote</name>
+            <sys_class_name>sys_choice_set</sys_class_name>
+            <sys_created_by>ben.hollifield@snc_SHARE</sys_created_by>
+            <sys_created_on>2014-12-16 17:42:26</sys_created_on>
+            <sys_id>e7f7e43e4fc9130001bcf9aba310c77c</sys_id>
+            <sys_mod_count>71</sys_mod_count>
+            <sys_name>type</sys_name>
+            <sys_package display_value="Idea Box" source="x_snc_idea_box">af5a68590f013100c8badf2be1050ef5</sys_package>
+            <sys_policy/>
+            <sys_scope display_value="Idea Box">af5a68590f013100c8badf2be1050ef5</sys_scope>
+            <sys_update_name>sys_choice_x_snc_idea_box_vote_type</sys_update_name>
+            <sys_updated_by>ben.hollifield@snc_SHARE</sys_updated_by>
+            <sys_updated_on>2015-10-04 21:33:31</sys_updated_on>
+        </sys_choice_set>
+    </sys_choice>
+</record_update>

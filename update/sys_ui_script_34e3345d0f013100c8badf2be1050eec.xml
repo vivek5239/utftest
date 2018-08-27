@@ -1,0 +1,506 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_ui_script">
+    <sys_ui_script action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <description>UI Script to support the Idea Box application</description>
+        <global>false</global>
+        <name>x_snc_idea_box.ideabox_js</name>
+        <script><![CDATA[//Available variables from UI Page
+//boxID = sys_id of the current Box record
+//postID = sys_id of current Idea (if specified in the URL)
+//modalID = sys_id of the post in the current modal
+//boxName = name of this Idea Box
+//batchSize = number of results to return per page
+//userID = sys_id of the current user
+//boxListArray = array of all available boxes by sys_id
+//canCreateBoxes = true/false if user is allowed to create Boxes
+//canWriteBox = true/false if user is allowed to edit the current box
+//canPost = true/false if user is allowed to post in the current box
+//allowVotes = Voting is allowed for the selected box
+//isSubscribed = true/false if the user is subscribed to the current box
+(function(){
+	var app = angular.module('ideabox',['ngAnimate','ui.bootstrap']);
+	app.controller('IdeaController', function($scope, $sce) {
+		$scope.postArray = []; //Array of post results
+		$scope.commentArray = []; //Array of comment results for a post
+		$scope.boxTitle = ''; //Title of the current box
+		$scope.boxListArray = []; //List of selectable boxes
+		$scope.canCreate = canCreateBoxes; //Can user create boxes?
+		$scope.canPost = ''; //Can user post in the current box?
+		$scope.canWrite = ''; //Can user edit the current box?
+		$scope.isSubscribedBox = ''; //Is the user subscribed to the current box?
+		$scope.canSubscribe = ''; //Is the current box subscribable?
+		$scope.commentInput = ''; //Comment input box contents
+		$scope.boxID = ''; //SysID of the current Box
+		$scope.showBoxNameOnIdea = '';
+		$scope.allowVotes = '';
+		$scope.allDownvotes = '';
+		$scope.modalDetails = {};
+		$scope.maxResults = 0; //maxResults to show for a box
+		$scope.batchSize = parseInt(batchSize); //Number of results to show per page
+		$scope.currentPage = 1; //Current page being viewed
+		$scope.pageLoad = false; //Determines when a new set of results is loaded
+		var currIndex = 0; //Current index of the first post listed
+		var currResults = 0; //Number of results returned for a page
+		var activeSort; //The active sort order (newest, hottest, etc)
+		var activeSortComment; //The active comment sort order
+		var commentsLoad; //Determines when a new set of comments is loaded
+		var searchField = 'box_search_field'; //ID of the search field
+		var searchTerm = ''; //Current value of search term
+		var initModal = ''; //Determines if modal was loaded from URL on init
+		
+		//Initialize app
+		$scope.init = function(){
+			currIndex = 0;
+			$scope.boxID = boxID;
+			$scope.boxTitle = boxName;
+			$scope.allowVotes = allowVotes;
+			activeSort = 'newest';
+			activeSortComment = 'newest';
+			buildBoxSelector();
+			if (boxName){
+				//If a post specified in URL sysparm_post_id, then auto-load post
+				if (postID){
+					initModal = true;
+					var options = {
+						"backdrop" : "true",
+						"keyboard" : "true",
+						"show" : "true"
+					};
+					jQuery('#postModal').modal(options);
+					getPost(postID);
+					//Add event to reload Box on close of auto-loaded modal
+					//Needed to rebind UI to data for accuracy
+					jQuery('#postModal').on('hide.bs.modal', function (e) {
+						if (initModal == true){
+							initModal = false;
+							$scope.resetBox($scope.boxID);
+						}
+					});
+				}
+				else{
+					$scope.getBatch('this');
+					$scope.canWrite = canWriteBox;
+					$scope.canPost = canPost;
+					$scope.isSubscribedBox = isSubscribedBox;
+					if ($scope.boxID == 'allposts'){
+						$scope.showBoxNameOnIdea = 'true';
+						$scope.canSubscribe = 'false';
+					}
+					else{
+						$scope.showBoxNameOnIdea = 'false';
+						$scope.canSubscribe = 'true';
+					}
+				}
+			}
+			else{
+				$scope.boxTitle = '(Psst. Click Here.)';
+				$scope.canWrite = 'false';
+				$scope.canPost = 'true';
+				$scope.canSubscribe = 'false';
+			}
+		};
+		
+		//Return true/false of whether the given sort is selected
+		$scope.sortSelected = function(checkSort){
+			return activeSort === checkSort;
+		};
+		
+		//Function on selection of a new sort
+		//Sets the new sort and resets the view
+		$scope.selectSort = function(setSort){
+			activeSort = setSort;
+			currIndex = 0;
+			$scope.getBatch('this');
+		};
+		
+		//Return true/false of whether the given comment sort is selected
+		$scope.sortSelectedComment = function(checkSort){
+			return activeSortComment === checkSort;
+		};
+		
+		//Function on selection of a new sort for comments
+		//Sets the new sort and resets the view
+		$scope.selectSortComment = function(setSort, postID){
+			activeSortComment = setSort;
+			$scope.getIdeaResults(postID);
+		};
+		
+		//Return true/false if 'Copy Link' should be shown on Idea page
+		$scope.showLinkIdea = function(){
+			return ($scope.pageLoad == true);
+		};
+		
+		//Return true/false if 'Copy Link' should be shown on Comments page
+		$scope.showLinkComment = function(){
+			return (commentsLoad == true);
+		};
+		
+		//Return true/false when comments are loaded for an idea
+		$scope.showComments = function(){
+			return commentsLoad;
+		};
+		
+		//Function on upvote of an idea by user
+		//Checks server for previous votes before posting
+		$scope.upVote = function(post){
+			var voteResponse = updateVote(post.id,'upvote');
+			if (voteResponse == 'SUCCESS'){
+				post.votes++;
+				if (post.voteStyle == 'novote'){
+					post.voteStyle = 'upvote';
+					post.totalVotes++;
+				}
+				else if (post.voteStyle == 'downvote'){
+					post.voteStyle = 'novote';
+					post.totalVotes--;
+				}
+			}
+		};
+		
+		//Function on downvote of an idea by user
+		//Checks server for previous votes before posting
+		$scope.downVote = function(post){
+			var voteResponse = updateVote(post.id,'downvote');
+			if (voteResponse == 'SUCCESS'){
+				post.votes--;
+				if (post.voteStyle == 'novote'){
+					post.voteStyle = 'downvote';
+					post.totalVotes++;
+				}
+				else if (post.voteStyle == 'upvote'){
+					post.voteStyle = 'novote';
+					post.totalVotes--;
+				}
+			}
+		};
+		
+		//Return if the current post has been upvoted by user
+		$scope.isUpvote = function(voteStyle){
+			return (voteStyle === 'upvote');
+		};
+		
+		//Return if the current post has been downvoted by user
+		$scope.isDownvote = function(voteStyle){
+			return (voteStyle === 'downvote');
+		};
+		
+		//Return if the current box/post has been subscribed to by user
+		$scope.isSubscribed = function(isSubscribed){
+			return (isSubscribed === 'true');
+		};
+		
+		//Return if the current box/post has not been subscribed to by user
+		$scope.isUnsubscribed = function(isSubscribed){
+			return (isSubscribed === 'false');
+		};
+		
+		//Return tooltip title for the subscription icon
+		$scope.subscribeTitle = function(isSubscribed){
+			var returnVal = '';
+			if (isSubscribed === 'true')
+				returnVal = 'Unsubscribe from ';
+			else
+				returnVal = 'Subscribe to ';
+			alert(returnVal);
+			return returnVal;
+		};
+		
+		//Toggle user's subscription for the box
+		$scope.toggleSubscriptionBox = function(){
+			//Send to server for processing
+			var ga = new GlideAjax('x_snc_idea_box.ideaBoxAjax');
+			ga.addParam('sysparm_name', 'toggleSubscriptionBox');
+			ga.addParam('sysparm_box_id', $scope.boxID);
+			ga.addParam('sysparm_user_id', userID);
+			ga.getXMLWait();
+			returnValue = ga.getAnswer();
+			if (returnValue == 'SUCCESS'){
+				if ($scope.isSubscribedBox == 'false'){
+					//Add code to subscribe to box
+					$scope.isSubscribedBox = 'true';
+				}
+				else{
+					//Add code to unsubscribe from box
+					$scope.isSubscribedBox = 'false';
+				}
+			}
+		};
+		
+		//Toggle user's subscription for an idea
+		$scope.toggleSubscriptionIdea = function(post){
+			//Send to server for processing
+			var ga = new GlideAjax('x_snc_idea_box.ideaBoxAjax');
+			ga.addParam('sysparm_name', 'toggleSubscriptionIdea');
+			ga.addParam('sysparm_idea_id', post.id);
+			ga.addParam('sysparm_user_id', userID);
+			ga.getXMLWait();
+			returnValue = ga.getAnswer();
+			if (returnValue == 'SUCCESS'){
+				if (post.isSubscribed == 'false'){
+					//Add code to subscribe to idea
+					post.isSubscribed = 'true';
+				}
+				else{
+					//Add code to unsubscribe from an idea
+					post.isSubscribed = 'false';
+				}
+			}
+		};
+		
+		//Return if the current post has no votes by user
+		$scope.isNovote = function(arrowType, voteStyle){
+			return (arrowType !== voteStyle);
+		};
+		
+		//Return if the current post is pinned
+		$scope.isPinned = function(pinned){
+			return (pinned === 'true');
+		};
+		
+		//Submit a new comment
+		$scope.submitComment = function(post, comment){
+			var trimComment = comment.toString().replace(/\n/g, "<br />").trim();
+			if (trimComment != ''){
+				//Send comment to server
+				var ga = new GlideAjax('x_snc_idea_box.ideaBoxAjax');
+				ga.addParam('sysparm_name', 'addComment');
+				ga.addParam('sysparm_idea_id', post.id.toString());
+				ga.addParam('sysparm_comment_text', trimComment);
+				ga.getXMLAnswer(processCommentSubmission);
+				post.comments++;
+				post.isSubscribed = 'true';
+			}
+			$scope.commentInput = '';
+		};
+		
+		//Asynchronous callback to process comment submission result
+		processCommentSubmission = function(results){
+			if (results){
+				var singleComment = JSON.parse(results);
+				$scope.$apply(function(){$scope.commentArray.unshift(singleComment);});
+			}
+		};
+		
+		//Create record dialog
+		$scope.showPopUp = function(tableName, recID, postView){
+			if (boxName || postView == 'newbox'){
+				//Initialize title
+				var dialogTitle = 'Create Post';
+				
+				//Change titles, if needed
+				if (postView == 'newbox')
+					dialogTitle = 'Create Box';
+				else if (postView == 'existingbox')
+					dialogTitle = 'Edit Box';
+				else if (postView == 'existingpost')
+					dialogTitle = 'Edit Post';
+				else if (postView == 'existingcomment')
+					dialogTitle = 'Edit Comment';
+				
+				//Create and open the dialog form
+				//Get height for form (auto-height can cause scroll issues)
+				var height=window.innerWidth;//Firefox
+				if (document.body.clientHeight)
+					height=document.body.clientHeight;//IE
+				height = height - 200;
+				var dialog;
+				if (postView == 'newbox')
+					dialog = new GlideDialogForm(dialogTitle, tableName, redirectToBox);
+				else
+					dialog = new GlideDialogForm(dialogTitle, tableName);
+				dialog.setSysID(recID);
+				dialog.addParm('sysparm_view', postView);
+				dialog.addParm('sysparm_form_only', 'true');
+				dialog.setDialogSize(200, height);
+				//Set callback to init new post, if needed
+				if (postView == 'newpost'){
+					dialog.setLoadCallback(function(iframeDoc) {
+						var dialogFrame = 'defaultView' in iframeDoc ? iframeDoc.defaultView : iframeDoc.parentWindow;
+						dialogFrame.g_form.setValue('box', $scope.boxID);
+						dialogFrame.g_form.setValue('submitted_by', userID);
+						dialogFrame = null;
+					});
+				}
+				dialog.render();
+			}
+			else
+				alert('Try this again after selecting an Idea Box! (up and to your left)');
+		};
+		
+		//On creation of new box, redirect to that box
+		redirectToBox = function(action, sys_id, table, displayValue){
+			window.location.href = 'x_snc_idea_box_ideabox_home.do?sysparm_sys_id=' + sys_id;
+		};
+		
+		//Populate data for modal display (for existing posts)
+		$scope.popPostData = function(post){
+			commentsLoad = false;
+			modalID = post.id;
+			addView(post.id); //Increment post view count
+			$scope.modalDetails = post;
+			$scope.getIdeaResults(post.id);
+		};
+		
+		$scope.getIdeaResults = function(postID){
+			//Query server for next batch of results
+			var ga = new GlideAjax('x_snc_idea_box.ideaBoxAjax');
+			ga.addParam('sysparm_name', 'getComments');
+			ga.addParam('sysparm_sort_order', activeSortComment);
+			ga.addParam('sysparm_idea_id', postID);
+			ga.getXMLAnswer(processIdeaResults);
+		};
+		
+		//Asynchronous callback to process comment results
+		processIdeaResults = function(results){
+			var returnArray = [];
+			if (results){
+				var resultObject = JSON.parse(results);
+				$scope.modalDetails.description = resultObject.idea_details.description;
+				$scope.modalDetails.canWritePost = resultObject.idea_details.canWrite;
+				if (resultObject.comments){
+					for (var i=0; i < resultObject.comments.length; i++) {
+						returnArray[i] = resultObject.comments[i];
+						currResults++;
+					}
+				}
+			}
+			commentsLoad = true;
+			$scope.$apply(function(){$scope.commentArray = returnArray;});
+		};
+		
+		//Reset the page based on selection of a new box from the list
+		$scope.resetBox = function(newBoxID){
+			var newURL = window.location.href.toString();
+			if (newURL.indexOf('sysparm_post_id') > -1)
+				newURL = newURL.replace(/sysparm_post_id=[\w\d]*/, '');
+			if (newURL.indexOf('sysparm_sys_id') > -1)
+				newURL = newURL.replace(/sysparm_sys_id=[\w\d]*/, 'sysparm_sys_id=' + newBoxID);
+			else if (newURL.indexOf('?') > -1)
+				newURL = newURL + '&sysparm_sys_id=' + newBoxID;
+			else
+				newURL = newURL + '?sysparm_sys_id=' + newBoxID;
+			window.location.href = newURL;
+		};
+		
+		//Return next/prev page of results
+		$scope.getBatch = function(batchType){
+			$scope.pageLoad = false;
+			//Get contents of search field
+			searchTerm = document.getElementById(searchField).value;
+			//Increment/decrement index accordingly
+			/*if (batchType == 'next')
+			currIndex = currIndex + parseInt($scope.batchSize);
+			else if (batchType == 'prev' && currIndex > 0)
+				currIndex = currIndex - parseInt($scope.batchSize);*/
+			currIndex = ($scope.currentPage-1)*$scope.batchSize;
+			
+			//Query server for next batch of results
+			var ga = new GlideAjax('x_snc_idea_box.ideaBoxAjax');
+			ga.addParam('sysparm_name', 'getIdeas');
+			ga.addParam('sysparm_box_id', $scope.boxID);
+			ga.addParam('sysparm_start_index', currIndex.toString());
+			ga.addParam('sysparm_sort', activeSort);
+			ga.addParam('sysparm_search_term', searchTerm);
+			ga.getXMLAnswer(processBatchResults);
+		};
+		
+		//Asynchronous callback to process idea results
+		processBatchResults = function(results){
+			var returnArray = [];
+			if (results){
+				var resultObject = JSON.parse(results);
+				$scope.maxResults = resultObject.maxResults;
+				currResults = 0;
+				if (resultObject.posts){
+					for (var i=0; i < resultObject.posts.length; i++) {
+						returnArray[i] = resultObject.posts[i];
+						currResults++;
+					}
+				}
+			}
+			$scope.pageLoad = true;
+			$scope.$apply(function(){$scope.postArray = returnArray;});
+		};
+		
+		//Return single Idea (for loading Idea from URL)
+		getPost = function(postID){
+			commentsLoad = false;
+			//Query server for post details
+			var ga = new GlideAjax('x_snc_idea_box.ideaBoxAjax');
+			ga.addParam('sysparm_name', 'getPost');
+			ga.addParam('sysparm_post_id', postID);
+			ga.getXMLAnswer(processPostResults);
+		};
+		
+		//Asynchronous callback to process single post results
+		processPostResults = function(results){
+			var post = {};
+			if (results)
+				post = JSON.parse(results);
+			$scope.popPostData(post);
+		};
+		
+		//Update vote count for given post
+		//Checks server for prior votes before posting
+		//Returns 'SUCCESS' for 'FAILURE' if vote is valid/invalid
+		//Runs synchronously
+		updateVote = function(id, voteStyle){
+			var returnValue = '';
+			//Send vote to server for processing
+			var ga = new GlideAjax('x_snc_idea_box.ideaBoxAjax');
+			ga.addParam('sysparm_name', 'processVote');
+			ga.addParam('sysparm_idea_id', id);
+			ga.addParam('sysparm_vote_style', voteStyle);
+			ga.getXMLWait();
+			returnValue = ga.getAnswer();
+			return returnValue;
+		};
+		
+		//Increment view count for given post
+		addView = function(id){
+			//Send view to server for processing
+			var ga = new GlideAjax('x_snc_idea_box.ideaBoxAjax');
+			ga.addParam('sysparm_name', 'addView');
+			ga.addParam('sysparm_idea_id', id);
+			ga.getXMLAnswer();
+		};
+		
+		//Build contents of box selector
+		buildBoxSelector = function(){
+			$scope.boxListArray = boxListArray;
+		};
+		
+		
+		//Perform search within the current Box
+		doSearch = function(field, event){
+			var keyPressed = event.keyCode || event.charCode;
+			if (keyPressed == '13'){
+				currIndex = 0;
+				$scope.getBatch('this');
+			}
+		};
+		
+		//Handler for rendering HTML links in Angular
+		$scope.renderHTML = function(html_code){
+			return $sce.trustAsHtml(html_code);
+		};
+		
+	});
+})();]]></script>
+        <script_name>ideabox_js</script_name>
+        <sys_class_name>sys_ui_script</sys_class_name>
+        <sys_created_by>ben.hollifield@snc_SHARE</sys_created_by>
+        <sys_created_on>2014-12-16 15:20:43</sys_created_on>
+        <sys_id>34e3345d0f013100c8badf2be1050eec</sys_id>
+        <sys_mod_count>424</sys_mod_count>
+        <sys_name>x_snc_idea_box.ideabox_js</sys_name>
+        <sys_package display_value="Idea Box" source="x_snc_idea_box">af5a68590f013100c8badf2be1050ef5</sys_package>
+        <sys_policy>protected</sys_policy>
+        <sys_scope display_value="Idea Box">af5a68590f013100c8badf2be1050ef5</sys_scope>
+        <sys_update_name>sys_ui_script_34e3345d0f013100c8badf2be1050eec</sys_update_name>
+        <sys_updated_by>ben.hollifield@snc_SHARE</sys_updated_by>
+        <sys_updated_on>2015-10-04 21:42:58</sys_updated_on>
+        <ui_type>0</ui_type>
+        <use_scoped_format>false</use_scoped_format>
+    </sys_ui_script>
+</record_update>

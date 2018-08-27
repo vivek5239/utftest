@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_properties_category">
+    <sys_properties_category action="INSERT_OR_UPDATE">
+        <name>Idea Box</name>
+        <sys_class_name>sys_properties_category</sys_class_name>
+        <sys_created_by>ben.hollifield@snc_SHARE</sys_created_by>
+        <sys_created_on>2014-12-16 16:18:11</sys_created_on>
+        <sys_id>8021c99d0f013100c8badf2be1050ee8</sys_id>
+        <sys_mod_count>27</sys_mod_count>
+        <sys_name>Idea Box</sys_name>
+        <sys_package display_value="Idea Box" source="x_snc_idea_box">af5a68590f013100c8badf2be1050ef5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Idea Box">af5a68590f013100c8badf2be1050ef5</sys_scope>
+        <sys_update_name>sys_properties_category_8021c99d0f013100c8badf2be1050ee8</sys_update_name>
+        <sys_updated_by>ben.hollifield@snc_SHARE</sys_updated_by>
+        <sys_updated_on>2015-06-18 16:12:02</sys_updated_on>
+        <title><![CDATA[<p><span style="font-size: 10pt;"><strong>System Properties &amp; Details for Idea Box</strong></span></p>
+<p><span style="font-size: 10pt;">An Idea Box is a collaborative space for sharing ideas and questions. Once an Idea is posted, other users can share their feelings and feedback by voting &amp; commenting on both the Idea and others&#39; feedback. Based on that collaboration, great Ideas and solutions bubble to the top where they have greater visibility and may be acted upon. It&#39;s great for gauging demand for new projects, accepting organizational feedback, seeking technical assistance, or just planning lunch!</span></p>
+<p><span style="font-size: 10pt;">Create as many Idea Boxes as you need for whatever topics or occasions require them - each is accessible separately via the main UI at:</span></p>
+<p><span style="font-size: 10pt;"><em><span style="font-size: 10pt;">https://[instance].service-now.com/x_snc_idea_box_ideabox_home.do</span></em></span></p>
+<p><span style="font-size: 10pt;"><em><span style="font-size: 10pt;"><span style="text-decoration: underline;">Notes</span>:</span></em></span></p>
+<ul><li><span style="font-size: 10pt;"><em><span style="font-size: 10pt;">To link directly to a specific Box, use the URL:<br />https://[instance].service-now.com/x_snc_idea_box_ideabox_home.do?sysparm_sys_id&#61;[box_sys_id]<br /></span></em></span></li><li><span style="font-size: 10pt;"><em><span style="font-size: 10pt;">To link directly to the &#39;All Posts&#39; page, use the URL:<br />https://[instance].service-now.com/x_snc_idea_box_ideabox_home.do?sysparm_sys_id&#61;allposts</span></em></span></li><li><span style="font-size: 10pt;"><span style="font-size: 10pt;"><em><span style="font-size: 10pt;">To link directly to a specific Idea posting, use the URL:<br />https://[instance].service-now.com/x_snc_idea_box_ideabox_home.do?sysparm_post_id&#61;[idea_sys_id]</span></em></span></span></li><li><span style="font-size: 10pt;"><span style="font-size: 10pt;"><em><span style="font-size: 10pt;">Or, just scroll to the bottom of any Box or Idea and click &#39;Copy Link&#39; to get the URL for that item.<br /></span></em></span></span></li></ul>
+<p><span style="font-size: 10pt;">Use these URLs in modules, bookmarks, emails, or wherever else is convenient for your users.</span></p>
+<p><span style="font-size: 10pt;">Assign the role of &#39;x_snc_idea_box.ideabox_admin&#39; to administrators of the Idea Box application. Administrators can edit &amp; delete any Idea Box record and may add Badges to any Idea post.<br /></span></p>
+<p><span style="font-size: 10pt;"><span style="text-decoration: underline;">In the left nav</span>:</span></p>
+<ul><li><span style="font-size: 10pt;"><strong>Launch Idea Box</strong>: Launch the main UI<br /></span></li><li><span style="font-size: 10pt;"><strong>Boxes</strong>: The parent Idea Box - essentially, it&#39;s own &#39;forum&#39; <em>(visible to Idea Box admin)</em><br /></span></li><li><span style="font-size: 10pt;"><strong>Ideas</strong>: All Ideas that have been submitted <span style="font-size: 10pt;"><em>(visible to Idea Box admin)</em></span><br /></span></li><li><span style="font-size: 10pt;"><strong>Comments</strong>: All Comments that have been left <span style="font-size: 10pt;"><em>(visible to Idea Box admin)</em></span><br /></span></li><li><span style="font-size: 10pt;"><strong>Votes</strong>: All Votes submitted for all Ideas &amp; Comments <span style="font-size: 10pt;"><em>(visible to Idea Box admin)</em></span><br /></span></li><li><span style="font-size: 10pt;"><strong>Properties</strong>: Details and Properties of this application <span style="font-size: 10pt;"><em>(visible to full admin)</em></span><br /></span></li></ul>
+<p><span style="font-size: 10pt;"><span style="text-decoration: underline;">In the app</span>:<br /></span></p>
+<ul><li>Click the Idea Box title to select an existing or create a new Idea Box.</li><li><ul><li>Ability to view a Box is determined by roles configured on the Box record.</li><li>Ability to create new Boxes is determined by roles configured in Properties.</li></ul>
+</li><li>To search, type a term and then press Enter or change sort order to initiate.</li><li>Sort order:</li><li><ul><li><strong style="font-size: 10pt;">Newest</strong><span style="font-size: 10pt;">: Newest up top</span></li><li><strong style="font-size: 10pt;">Popular</strong><span style="font-size: 10pt;">: Highest score (upvotes - downvotes) up top</span></li><li><strong style="font-size: 10pt;">Hottest</strong><span style="font-size: 10pt;">: Most recently commented up top</span></li></ul>
+</li><li>Click Create Post to create a new post within the current Box.</li><li><ul><li>Ability to create new Posts is determined by roles configured on Box record.</li></ul>
+</li><li>Click Edit Post or Edit Box to edit an existing item.</li><li><ul><li>At the Comment level, click the comment text to edit.</li><li>Ability to edit is determined by &#39;write&#39; access controls on the Box, Idea, and Comments tables. By default, admins, creators, and Box moderators are granted ability to edit.<span style="font-size: 10pt;"></span></li><li>Admins &amp; Box moderators can add colored Badges to Ideas to denote a certain state, like &#39;Answered&#39; or &#39;Promoted to Development&#39;.</li><li>Admins &amp; Box moderators can pin Ideas to the top of their respective Idea Box, to ensure they have maximal visibility.</li></ul>
+</li><li>Click the Subscribe icon to enable/disable email notifications on new posts/comments for that item.</li><li>Click the up/down arrows to tell folks how you feel about any post.</li><li><ul><li>Each person can only upvote or downvote a post once, but you can always change your vote.</li></ul>
+</li><li>Click the post title or comments link to view the details of a post and comments.</li></ul>]]></title>
+    </sys_properties_category>
+    <sys_translated_text action="delete_multiple" query="documentkey=8021c99d0f013100c8badf2be1050ee8"/>
+</record_update>

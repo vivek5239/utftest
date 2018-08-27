@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_email">
+    <sys_script_email action="INSERT_OR_UPDATE">
+        <name>idea_box_link</name>
+        <new_lines_to_html>false</new_lines_to_html>
+        <script><![CDATA[var ideaURL = '<a href="x_snc_idea_box_ideabox_home.do?sysparm_post_id=' + current.sys_id.toString() + '" target="_blank">' + current.box.getDisplayValue() + '</a>';
+template.print(ideaURL);]]></script>
+        <sys_class_name>sys_script_email</sys_class_name>
+        <sys_created_by>ben.hollifield@snc_SHARE</sys_created_by>
+        <sys_created_on>2015-04-29 21:45:16</sys_created_on>
+        <sys_id>2f111068fff3310002ad26ec8b649df5</sys_id>
+        <sys_mod_count>3</sys_mod_count>
+        <sys_name>idea_box_link</sys_name>
+        <sys_package display_value="Idea Box" source="x_snc_idea_box">af5a68590f013100c8badf2be1050ef5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Idea Box">af5a68590f013100c8badf2be1050ef5</sys_scope>
+        <sys_update_name>sys_script_email_2f111068fff3310002ad26ec8b649df5</sys_update_name>
+        <sys_updated_by>ben.hollifield@snc_SHARE</sys_updated_by>
+        <sys_updated_on>2015-05-26 15:13:43</sys_updated_on>
+    </sys_script_email>
+</record_update>

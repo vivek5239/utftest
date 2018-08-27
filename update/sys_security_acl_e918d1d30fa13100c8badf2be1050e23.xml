@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_security_acl">
+    <sys_security_acl action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <admin_overrides>true</admin_overrides>
+        <advanced>false</advanced>
+        <condition/>
+        <description>Allow delete for records in x_snc_idea_box_vote, for users with role x_snc_idea_box.ideabox_admin.</description>
+        <name>x_snc_idea_box_vote</name>
+        <operation display_value="delete">delete</operation>
+        <script/>
+        <sys_class_name>sys_security_acl</sys_class_name>
+        <sys_created_by>ben.hollifield@snc_SHARE</sys_created_by>
+        <sys_created_on>2015-01-16 19:37:23</sys_created_on>
+        <sys_id>e918d1d30fa13100c8badf2be1050e23</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>x_snc_idea_box_vote</sys_name>
+        <sys_package display_value="Idea Box" source="x_snc_idea_box">af5a68590f013100c8badf2be1050ef5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Idea Box">af5a68590f013100c8badf2be1050ef5</sys_scope>
+        <sys_update_name>sys_security_acl_e918d1d30fa13100c8badf2be1050e23</sys_update_name>
+        <sys_updated_by>ben.hollifield@snc_SHARE</sys_updated_by>
+        <sys_updated_on>2015-01-16 19:37:23</sys_updated_on>
+        <type display_value="record">record</type>
+    </sys_security_acl>
+</record_update>

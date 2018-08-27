@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update>
+    <sys_ui_form_sections form_id="a3cbd05b0f613100c8badf2be1050e9d" sys_domain="global" table="x_snc_idea_box_idea" version="3">
+        <sys_ui_form_section action="INSERT_OR_UPDATE">
+            <position>0</position>
+            <sys_created_by>ben.hollifield@snc_SHARE</sys_created_by>
+            <sys_created_on>2015-01-16 15:14:00</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>67cbd05b0f613100c8badf2be1050e9d</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_overrides/>
+            <sys_ui_form display_value="x_snc_idea_box_idea" name="x_snc_idea_box_idea" sys_domain="global" view="Default view">a3cbd05b0f613100c8badf2be1050e9d</sys_ui_form>
+            <sys_ui_section caption="NULL" display_value="" name="x_snc_idea_box_idea" sys_domain="global" view="Default view">677e28990f013100c8badf2be1050ec1</sys_ui_section>
+            <sys_updated_by>ben.hollifield@snc_SHARE</sys_updated_by>
+            <sys_updated_on>2015-01-16 15:14:00</sys_updated_on>
+        </sys_ui_form_section>
+        <sys_ui_form_section action="INSERT_OR_UPDATE">
+            <position>1</position>
+            <sys_created_by>ben.hollifield@snc_SHARE</sys_created_by>
+            <sys_created_on>2015-01-16 15:14:00</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>abcbd05b0f613100c8badf2be1050e9d</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_overrides/>
+            <sys_ui_form display_value="x_snc_idea_box_idea" name="x_snc_idea_box_idea" sys_domain="global" view="Default view">a3cbd05b0f613100c8badf2be1050e9d</sys_ui_form>
+            <sys_ui_section caption="Pin &amp; Badge" display_value="Pin &amp; Badge" name="x_snc_idea_box_idea" sys_domain="global" view="Default view">e7cbd05b0f613100c8badf2be1050e9d</sys_ui_section>
+            <sys_updated_by>ben.hollifield@snc_SHARE</sys_updated_by>
+            <sys_updated_on>2015-01-16 15:14:00</sys_updated_on>
+        </sys_ui_form_section>
+        <sys_ui_form action="INSERT_OR_UPDATE">
+            <name>x_snc_idea_box_idea</name>
+            <roles/>
+            <sys_class_name>sys_ui_form</sys_class_name>
+            <sys_created_by>ben.hollifield@snc_SHARE</sys_created_by>
+            <sys_created_on>2015-01-16 15:14:00</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>a3cbd05b0f613100c8badf2be1050e9d</sys_id>
+            <sys_mod_count>51</sys_mod_count>
+            <sys_name>x_snc_idea_box_idea</sys_name>
+            <sys_overrides/>
+            <sys_package display_value="Idea Box" source="x_snc_idea_box">af5a68590f013100c8badf2be1050ef5</sys_package>
+            <sys_policy/>
+            <sys_scope display_value="Idea Box">af5a68590f013100c8badf2be1050ef5</sys_scope>
+            <sys_update_name>sys_ui_form_sections_a3cbd05b0f613100c8badf2be1050e9d</sys_update_name>
+            <sys_updated_by>ben.hollifield@snc_SHARE</sys_updated_by>
+            <sys_updated_on>2015-10-04 21:33:31</sys_updated_on>
+            <sys_user/>
+            <view display_value="Default view" name="NULL">Default view</view>
+            <view_name/>
+        </sys_ui_form>
+    </sys_ui_form_sections>
+</record_update>

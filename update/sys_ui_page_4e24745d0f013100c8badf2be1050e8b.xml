@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_ui_page">
+    <sys_ui_page action="INSERT_OR_UPDATE">
+        <category>general</category>
+        <client_script/>
+        <description>UI Page to support the Idea Box application</description>
+        <direct>false</direct>
+        <endpoint>x_snc_idea_box_ideabox_home.do</endpoint>
+        <html><![CDATA[<?xml version="1.0" encoding="utf-8" ?>
+<j:jelly trim="false" xmlns:j="jelly:core" xmlns:g="glide" xmlns:j2="null" xmlns:g2="null">
+
+<!--Display an Idea Box, based on inputs:
+sysparm_sys_id : sys_id of the Idea Box to display
+Call like: https://[instanceName].service-now.com/x_snc_idea_box_ideabox_home.do?sysparm_sys_id=[sys_id]
+Calling without specific sys_id will load interface with list of selectable Boxes-->
+
+<!-- Gather Box initialization values -->
+<g:evaluate var="jvar_box_init">
+	//Pass box ID parameter and idea ID parameter to boxInit
+	var boxInit = new x_snc_idea_box.ideaBoxHelper().initializeBox('${JS:sysparm_sys_id}', '${JS:sysparm_post_id}');
+	boxInit;
+</g:evaluate>
+<j:set var="jvar_pinned_color" value="${gs.getProperty('x_snc_idea_box.pinned_color')}"/>
+
+<!-- Check if user is allowed to create Boxes -->
+<g:evaluate var="jvar_can_create_boxes">
+	var createRoles = gs.getProperty("x_snc_idea_box.box_create_roles");
+	var hasRoles = gs.hasRole(createRoles);
+	hasRoles;
+</g:evaluate>
+	
+<!-- Included needed CSS and JS libraries -->
+<g:requires name="x_snc_idea_box.angular_min.jsdbx"/>
+<g:requires name="x_snc_idea_box.angular_animate_min.jsdbx"/>
+<g:requires name="x_snc_idea_box.ui_bootstrap_min.jsdbx"/>
+<g:requires name="x_snc_idea_box.ideabox_js.jsdbx"/>
+
+<!-- Send variables to client script for use -->
+<script>
+	postID = '${JS:sysparm_post_id}';
+	modalID = '';
+	boxInit = JSON.parse('${jvar_box_init}');
+	canCreateBoxes = '${jvar_can_create_boxes}';
+	//Parse out box config details
+	var boxConfig = boxInit.initObject;
+	boxName = boxConfig.box_name;
+	batchSize = boxConfig.items_per_page;
+	userID = boxConfig.user_id;
+	canWriteBox = boxConfig.can_write;
+	canPost =  boxConfig.can_post;
+	allowVotes = boxConfig.allow_votes;
+	boxID = boxConfig.sys_id;
+	isSubscribedBox = boxConfig.is_subscribed;
+	//Parse out list of available boxes
+	var boxListArray = boxInit.boxArray;
+</script>
+
+<!-- Setup needed CSS styles -->	
+<style>
+#ideabox_id .upvote{
+	color: #4BD762;
+}
+
+#ideabox_id .downvote{
+	color: #FF402C;
+}
+
+#ideabox_id .novote{
+	color: #485563;
+}
+
+#ideabox_id .pinned-panel{
+	background-color: ${jvar_pinned_color};
+}
+	
+#ideabox_id .highlight-button-light:hover{
+	background-color: #F5F5F5
+}
+	
+#ideabox_id .highlight-button-dark:hover{
+	color: #485563
+}
+	
+#ideabox_id .action a{
+	border-width: 1px;
+	border-style: solid;
+}
+<!-- Animations -->
+#ideabox_id .ng-hide {
+	display: none;
+}
+#ideabox_id .ib-animate.ng-enter{
+	webkit-transition:0.15s linear all;
+	moz-transition:0.15s linear all;
+	o-transition:0.15s linear all;
+	transition:0.15s linear all;
+}
+#ideabox_id .ib-animate.ng-enter{
+	opacity:0;
+}
+#ideabox_id .ib-animate.ng-enter.ng-enter-active{
+	opacity:1;
+}
+</style>
+
+<!-- JS to resolve conflicts between PrototypeJS and the Bootstrap dropdown -->
+<script>
+jQuery.noConflict();
+if (Prototype.BrowserFeatures.ElementExtensions) {
+	var disablePrototypeJS = function (method, pluginsToDisable) {
+		var handler = function (event) {
+			event.target[method] = undefined;
+			setTimeout(function () {
+				delete event.target[method];
+			}, 0);
+		};
+		pluginsToDisable.each(function (plugin) {
+			jQuery(window).on(method + '.bs.' + plugin, handler);
+		});
+	},
+	pluginsToDisable = ['collapse', 'dropdown', 'modal', 'tooltip'];
+	disablePrototypeJS('show', pluginsToDisable);
+	disablePrototypeJS('hide', pluginsToDisable);
+}
+jQuery(document).ready(function ($) {
+	$('.bs-example-tooltips').children().each(function () {
+		$(this).tooltip();
+	});
+});
+</script>
+
+<!-- Begin HTML -->
+<div id="ideabox_id">
+<div ng-app="ideabox">
+<div ng-init="init()" ng-controller="IdeaController as idea">
+	<div ng-cloak="true">
+		<div class="pull-right">
+			<input id="box_search_field" ng-change="getBatch(this)" ng-model="box_searcher" ng-model-options="{debounce:{'default':500}}" type="text" class="form-control" placeholder="Search" style="margin-bottom:10px" />
+			<ul class="nav nav-pills">
+				<li title="Sort by date created" ng-class="{active:sortSelected('newest')}"><a class="highlight-button-dark" ng-click="selectSort('newest')">Newest</a></li>
+				<li title="Sort by highest vote (upvotes - downvotes)" ng-show="allowVotes == 'true'" ng-class="{active:sortSelected('popular')}"><a class="highlight-button-dark" ng-click="selectSort('popular')">Popular</a></li>
+				<li title="Sort by most recently commented" ng-class="{active:sortSelected('hottest')}"><a class="highlight-button-dark" ng-click="selectSort('hottest')">Hottest</a></li>
+				<li class="action" title="Create a new post"><a class="form_action_button  action_context btn btn-default" ng-show="canPost == 'true'" ng-click="showPopUp('x_snc_idea_box_idea', '-1','newpost')">Create Post</a></li>
+				<li class="action" title="Edit the current Box"><a class="form_action_button  action_context btn btn-default" ng-show="canWrite == 'true'" ng-click="showPopUp('x_snc_idea_box_box', boxID,'existingbox')">Edit Box</a></li>
+				<li ng-show="canSubscribe == 'true'&amp;&amp; isSubscribedBox == 'false'" ng-click="toggleSubscriptionBox()" ng-class="{'icon-envelope-unsubscribe':isUnsubscribed(isSubscribedBox), 'icon-envelope-subscribe':isSubscribed(isSubscribedBox)}" style="font-size: 22px; text-align: center; margin-left: 15px; margin-right: 15px; cursor:pointer" title="Subscribe to this Box"></li>
+				<li ng-show="canSubscribe == 'true' &amp;&amp; isSubscribedBox == 'true'" ng-click="toggleSubscriptionBox()" ng-class="{'icon-envelope-unsubscribe':isUnsubscribed(isSubscribedBox), 'icon-envelope-subscribe':isSubscribed(isSubscribedBox)}" style="font-size: 22px; text-align: center; margin-left: 15px; margin-right: 15px; cursor:pointer" title="Unsubscribe from this Box"></li>
+			</ul>
+		</div>
+		<ul class="nav nav-pills">
+			<li class="dropdown"> <a class="dropdown-toggle novote highlight-button-light" data-toggle="dropdown" style="font-size:16pt" title="Click to select or create a Box">{{boxTitle.replace("zyx","'")}}</a>
+				<ul class="dropdown-menu">
+				<li>
+				<form class="form" id="formSearch" style="padding:8px;"> 
+                	<input ng-model="boxSearch" class="form-control" name="boxSearch" id="boxSearch" placeholder="Filter list" type="text" />
+                </form>
+                </li>
+				<li><a ng-repeat="box in boxListArray | filter:boxSearch" ng-click="resetBox(box.id)">{{box.name.replace("zyx","'")}}</a></li>
+				<li ng-show="canCreate=='true'" class="divider"></li>
+    			<li><a ng-show="canCreate=='true'" ng-click="showPopUp('x_snc_idea_box_box', '-1','newbox')">Create New Box...</a></li>
+				</ul>
+			</li>
+		</ul>
+	</div>
+	<hr />
+	<div ng-cloak="true" class="ib-animate" ng-repeat="post in postArray">
+		<div class="panel panel-default">
+			<div class="panel-heading" ng-class="{'pinned-panel':isPinned(post.pinned)}">
+				<div class="row">
+					<div ng-show="post.allowVotes == 'true'" class="col-xs-1" style="text-align: center">
+						<div ng-show="post.allowVotes == 'true'">
+							<div class="row">
+								<div ng-click="upVote(post);">
+									<a ng-class="{'glyphicon glyphicon-chevron-up':true, 'upvote':isUpvote(post.voteStyle), 'novote':isNovote('upvote',post.voteStyle)}" style="font-size: 18px; margin-left: 2px;"></a>
+								</div>
+							</div>
+							<div class="row" style="margin-bottom: 3px;">
+								<div class="badge">
+									<div style="font-size:16px">{{post.votes}}</div>
+							</div>
+							</div>
+							<div class="row">
+								<div ng-show="post.allowDownvotes == 'true'" ng-click="downVote(post);">
+									<a ng-class="{'glyphicon glyphicon-chevron-down':true, 'downvote':isDownvote(post.voteStyle), 'novote':isNovote('downvote', post.voteStyle)}" style="font-size: 18px; margin-right: 1px;"></a>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div ng-class="{'col-xs-11':post.allowVotes == 'true', 'col-xs-12':post.allowVotes == 'false'}">
+						<h4><a ng-click="popPostData(post)" data-toggle="modal" data-target="#postModal">{{post.title}}</a></h4>
+						<span ng-class="post.badgeColor">{{post.badgeText}}</span><span ng-show="post.allowVotes">{{post.totalVotes}} votes,&#160;</span><a class="novote" ng-click="popPostData(post)" data-toggle="modal" data-target="#postModal">{{post.comments}} comments</a><span ng-show="showBoxNameOnIdea">&#160;-&#160;<a class="novote" ng-click="resetBox(post.boxID)"><i>{{post.boxName}}</i></a></span>
+						<span class="pull-right">Posted {{post.created}} by {{post.creator}}</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- Begin paginator -->
+	<div ng-cloak="true" class="col-xs-12 text-center">
+		<pagination
+			ng-model="currentPage"
+			ng-change="getBatch(currentPage)"
+			ng-show="pageLoad == true &amp;&amp; postArray.length > 0"
+			total-items="maxResults"
+			items-per-page="batchSize"
+			class="pagination-med"
+			previous-text="&#8249;"
+			next-text="&#8250;"
+			boundary-links="true"
+			first-text="&#171;"
+			last-text="&#187;"
+			max-size="10">
+  		</pagination>
+	</div>
+	<!-- End paginator -->
+	<div ng-cloak="true" class="col-xs-12" style="text-align: center;" ng-show="showLinkIdea()">
+		<a onclick="var url = 'https://' + window.location.host + '/x_snc_idea_box_ideabox_home.do?sysparm_sys_id=' + boxID; prompt('Because of a browser limitation the URL can not be placed directly in the clipboard.  Please use Ctrl-C to copy the data and escape to dismiss this dialog', url);">Copy link</a>
+	</div>
+	
+	<!-- Modal UI for viewing/commenting posts -->
+	<div ng-cloak="true" class="modal fade" id="postModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div ng-show="showComments()" class="modal-content">
+            <div class="modal-header">
+            		<img type="button" class="close" data-dismiss="modal" id="popup_close_image" width="13" height="12" style="cursor: pointer;" src="images/x.gifx" alt="Close" />
+            	<div class="pull-right">
+            		<ul class="nav nav-pills" style="padding-right:5px">
+						<li title="Sort by date created" ng-class="{active:sortSelectedComment('newest')}"><a class="highlight-button-dark" ng-click="selectSortComment('newest', modalDetails.id)">Newest</a></li>
+						<li title="Sort by highest vote (upvotes - downvotes)" ng-show="modalDetails.allowVotes == 'true'" ng-class="{active:sortSelectedComment('popular')}"><a class="highlight-button-dark" ng-click="selectSortComment('popular', modalDetails.id)">Popular</a></li>
+						<li class="action" title="Edit the current post"><a class="form_action_button  action_context btn btn-default" ng-show="modalDetails.canWritePost == 'true'" ng-click="showPopUp('x_snc_idea_box_idea', modalDetails.id,'existingpost')">Edit Post</a></li>
+						<li ng-show="modalDetails.isSubscribed == 'false'" ng-click="toggleSubscriptionIdea(modalDetails)" ng-class="{'icon-envelope-unsubscribe':isUnsubscribed(modalDetails.isSubscribed), 'icon-envelope-subscribe':isSubscribed(modalDetails.isSubscribed)}" style="font-size: 22px; text-align: center; margin-left: 15px; margin-right: 15px; cursor:pointer" title="Subscribe to this post"></li>
+						<li ng-show="modalDetails.isSubscribed == 'true'" ng-click="toggleSubscriptionIdea(modalDetails)" ng-class="{'icon-envelope-unsubscribe':isUnsubscribed(modalDetails.isSubscribed), 'icon-envelope-subscribe':isSubscribed(modalDetails.isSubscribed)}" style="font-size: 22px; text-align: center; margin-left: 15px; margin-right: 15px; cursor:pointer" title="Unsubscribe from this post"></li>
+					</ul>
+            	</div>
+            	<div ng-show="modalDetails.allowVotes == 'true'" class="col-xs-1" style="text-align: center; height:95px;">
+					<div ng-show="modalDetails.allowVotes == 'true'">
+							<div class="row">
+									<div ng-click="upVote(modalDetails);">
+											<a ng-class="{'glyphicon glyphicon-chevron-up':true, 'upvote':isUpvote(modalDetails.voteStyle), 'novote':isNovote('upvote',modalDetails.voteStyle)}" style="vertical-align: top; font-size: 14px; margin-left: 1px;"></a>
+									</div>
+							</div>
+							<div class="row" style="margin-top: 1px;">
+									<div class="badge">
+											<div style="font-size:12px">{{modalDetails.votes}}</div>
+									</div>
+							</div>
+							<div class="row">
+									<div ng-show="modalDetails.allowDownvotes == 'true'" ng-click="downVote(modalDetails);">
+											<a ng-class="{'glyphicon glyphicon-chevron-down':true, 'downvote':isDownvote(modalDetails.voteStyle), 'novote':isNovote('downvote', modalDetails.voteStyle)}" style="vertical-align: bottom; font-size: 14px; margin-right: 1px;"></a>
+									</div>
+							</div>
+					</div>
+				</div>
+				<div>
+            		<h3 class="modal-title" id="myModalLabel">{{modalDetails.title}}</h3>
+					<p>Posted {{modalDetails.created}} by {{modalDetails.creator}}</p>
+            		<a class="novote" ng-click="resetBox(modalDetails.boxID)"><i>{{modalDetails.boxName}}</i></a>
+				</div>
+            </div>
+            <div class="modal-body">
+            	<div ng-bind-html="renderHTML(modalDetails.description)"></div>
+            	<hr />
+            	<div>
+            		<h4>Add a comment...</h4>
+					<textarea class="form-control" ng-modelrows="3" name="comment" ng-model="commentInput"></textarea>
+					<div style="margin-top:10px; margin-bottom:15px">
+                		<button title="Submit comment" ng_click="submitComment(modalDetails, commentInput)" type="button" class="btn btn-default">Submit</button>
+            		</div>
+            	</div>
+				<div class="ib-animate" ng-repeat="comment in commentArray">
+					<div class="well well-sm">
+						<div class="row">
+							<div ng-show="comment.allowVotes == 'true'" class="col-xs-1" style="text-align: center">
+								<div ng-show="comment.allowVotes == 'true'">
+									<div class="row">
+										<div ng-click="upVote(comment);">
+											<a ng-class="{'glyphicon glyphicon-chevron-up':true, 'upvote':isUpvote(comment.voteStyle), 'novote':isNovote('upvote',comment.voteStyle)}" style="vertical-align: top; font-size: 14px; margin-left: 1px;"></a>
+										</div>
+									</div>
+									<div class="row" style="margin-top: 1px;">
+										<div class="badge">
+											<div style="font-size:12px">{{comment.votes}}</div>
+									</div>
+									</div>
+									<div class="row">
+										<div ng-show="comment.allowDownvotes == 'true'" ng-click="downVote(comment);">
+											<a ng-class="{'glyphicon glyphicon-chevron-down':true, 'downvote':isDownvote(comment.voteStyle), 'novote':isNovote('downvote', comment.voteStyle)}" style="vertical-align: bottom; font-size: 14px; margin-right: 1px;"></a>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div ng-class="{'col-xs-11':comment.allowVotes == 'true', 'col-xs-12':comment.allowVotes == 'false'}">
+								<h5 ng-hide="comment.canWrite == 'true'" ng-bind-html="renderHTML(comment.text)"></h5>
+								<h5><a class="novote" ng-show="comment.canWrite == 'true'" ng-click="showPopUp('x_snc_idea_box_comment', comment.id,'existingcomment')" ng-bind-html="renderHTML(comment.text)"></a></h5>
+								<h5 class="novote" ng-show="comment.hasAttachments == 'true'" ng-bind-html="renderHTML(comment.attachmentLinks)"></h5>
+								<span class="novote" ng-show="comment.allowVotes == 'true'">{{comment.totalVotes}} votes</span>
+								<span class="pull-right novote">Posted {{comment.created}} by {{comment.creator}}</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		<div class="modal-footer">
+        	<div class="col-xs-12" style="text-align: center;" ng-show="showLinkComment()">
+				<a onclick="var url = 'https://' + window.location.host + '/x_snc_idea_box_ideabox_home.do?sysparm_post_id=' + modalID; prompt('Because of a browser limitation the URL can not be placed directly in the clipboard.  Please use Ctrl-C to copy the data and escape to dismiss this dialog', url);">Copy link</a>
+			</div>
+        </div>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+</div>
+
+</j:jelly>]]></html>
+        <name>ideabox_home</name>
+        <processing_script/>
+        <sys_class_name>sys_ui_page</sys_class_name>
+        <sys_created_by>ben.hollifield@snc_SHARE</sys_created_by>
+        <sys_created_on>2014-12-16 15:23:12</sys_created_on>
+        <sys_id>4e24745d0f013100c8badf2be1050e8b</sys_id>
+        <sys_mod_count>708</sys_mod_count>
+        <sys_name>ideabox_home</sys_name>
+        <sys_package display_value="Idea Box" source="x_snc_idea_box">af5a68590f013100c8badf2be1050ef5</sys_package>
+        <sys_policy>protected</sys_policy>
+        <sys_scope display_value="Idea Box">af5a68590f013100c8badf2be1050ef5</sys_scope>
+        <sys_update_name>sys_ui_page_4e24745d0f013100c8badf2be1050e8b</sys_update_name>
+        <sys_updated_by>ben.hollifield@snc_SHARE</sys_updated_by>
+        <sys_updated_on>2015-10-04 21:43:28</sys_updated_on>
+    </sys_ui_page>
+</record_update>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_properties">
+    <sys_properties action="INSERT_OR_UPDATE">
+        <choices/>
+        <description>Display an 'All Posts' option in the Idea Box list. (Posts in non-selectable Boxes will not be displayed. Users will only see posts in Boxes for which they have permission)</description>
+        <ignore_cache>false</ignore_cache>
+        <is_private>false</is_private>
+        <name>x_snc_idea_box.all_posts_option</name>
+        <read_roles/>
+        <suffix>all_posts_option</suffix>
+        <sys_class_name>sys_properties</sys_class_name>
+        <sys_created_by>ben.hollifield@snc_SHARE</sys_created_by>
+        <sys_created_on>2015-01-17 15:55:28</sys_created_on>
+        <sys_id>178e29ab0f213100c8badf2be1050e65</sys_id>
+        <sys_mod_count>4</sys_mod_count>
+        <sys_name>x_snc_idea_box.all_posts_option</sys_name>
+        <sys_package display_value="Idea Box" source="x_snc_idea_box">af5a68590f013100c8badf2be1050ef5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Idea Box">af5a68590f013100c8badf2be1050ef5</sys_scope>
+        <sys_update_name>sys_properties_178e29ab0f213100c8badf2be1050e65</sys_update_name>
+        <sys_updated_by>ben.hollifield@snc_SHARE</sys_updated_by>
+        <sys_updated_on>2015-10-04 19:55:09</sys_updated_on>
+        <type>boolean</type>
+        <value>true</value>
+        <write_roles/>
+    </sys_properties>
+    <sys_translated_text action="delete_multiple" query="documentkey=178e29ab0f213100c8badf2be1050e65"/>
+</record_update>

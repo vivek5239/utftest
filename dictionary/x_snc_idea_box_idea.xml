@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?><database>
+    <element label="Idea" max_length="40" name="x_snc_idea_box_idea" text_index="true" type="collection">
+        <element default="true" hint="Determines whether this post is visible - equivalent to deletion from the Idea Box interface" label="Active" max_length="40" name="active" type="boolean"/>
+        <element label="Attachment links" max_length="1000" name="attachment_links" read_only="true" type="html"/>
+        <element choice="1" hint="Background color for the badge" label="Badge color" max_length="40" name="badge_color" type="string">
+            <choice>
+                <element inactive_on_update="false" label="Gray" sequence="0" value="label label-default"/>
+                <element inactive_on_update="false" label="Green" sequence="1" value="label label-success"/>
+                <element inactive_on_update="false" label="Blue" sequence="2" value="label label-primary"/>
+                <element inactive_on_update="false" label="Orange" sequence="3" value="label label-warning"/>
+                <element inactive_on_update="false" label="Red" sequence="4" value="label label-danger"/>
+            </choice>
+        </element>
+        <element hint="Badge text to display" label="Badge text" max_length="40" name="badge_text" type="string"/>
+        <element hint="Parent box for this post" label="Box" mandatory="true" max_length="32" name="box" reference="x_snc_idea_box_box" reference_cascade_rule="delete" reference_qual="javascript:'active=true^selectable=true^sys_updated_onONLast x days@javascript:gs.daysAgoStart(' + gs.getProperty('x_snc_idea_box.box_age_out_days') + ')@javascript:gs.daysAgoEnd(0)'" type="reference" use_reference_qualifier="advanced"/>
+        <element attributes="slushbucket_ref_no_expand=true,no_sort=true" label="Commenters/Subscribers" max_length="1024" name="commenters" read_only="true" reference="sys_user" type="glide_list"/>
+        <element hint="Add a comment about this post" label="Comments" max_length="4000" name="comments" type="journal_input"/>
+        <element dependent="comments" dependent_on_field="comments" label="Comments journal" max_length="4000" name="comments_journal" type="journal_list" use_dependent_field="true"/>
+        <element default="0" hint="Total comments made about this post" label="Comment count" max_length="40" name="comment_count" read_only="true" type="integer"/>
+        <element hint="Additional detail or description for this post" label="Description" max_length="1000" name="description" type="html"/>
+        <element default="javascript:new GlideDateTime();" label="Last comment" max_length="40" name="last_comment" read_only="true" type="glide_date_time"/>
+        <element default="javascript:global.getNextObjNumberPadded();" display="true" label="Number" max_length="40" name="number" read_only="true" type="string"/>
+        <element hint="Pin this idea to the top of its Idea Box" label="Pin to top" max_length="40" name="pin_to_top" type="boolean"/>
+        <element default="javascript:gs.getUserID()" dynamic_default_value="2fd8e97bef3221002841f7f775c0fbc1" hint="User who submitted this post" label="Submitted by" max_length="32" name="submitted_by" read_only="true" reference="sys_user" type="reference" use_dynamic_default="true"/>
+        <element hint="Displayed title of this post" label="Title" mandatory="true" max_length="100" name="title" type="string"/>
+        <element default="0" hint="Total votes (upvote + downvote = total) for this post" label="Total vote count" max_length="40" name="total_vote_count" read_only="true" type="integer"/>
+        <element default="0" hint="Total number of times this post has been viewed" label="View count" max_length="40" name="view_count" read_only="true" type="integer"/>
+        <element default="0" hint="Vote score (upvote - downvote = score) for this post" label="Vote score" max_length="40" name="vote_count" read_only="true" type="integer"/>
+        <index name="index">
+            <element name="submitted_by"/>
+        </index>
+        <index name="index2">
+            <element name="box"/>
+        </index>
+    </element>
+</database>

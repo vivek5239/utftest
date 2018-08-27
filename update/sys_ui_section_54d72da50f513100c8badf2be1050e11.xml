@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update>
+    <sys_ui_section caption="" section_id="54d72da50f513100c8badf2be1050e11" sys_domain="global" table="x_snc_idea_box_comment" version="3" view="existingcomment">
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>description</element>
+            <position>0</position>
+            <sys_created_by>ben.hollifield@snc_SHARE</sys_created_by>
+            <sys_created_on>2015-05-01 17:19:21</sys_created_on>
+            <sys_id>e767a905ffb7310002ad26ec8b649dee</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="NULL" display_value="" name="x_snc_idea_box_comment" sys_domain="global" view="58d72da50f513100c8badf2be1050e10">54d72da50f513100c8badf2be1050e11</sys_ui_section>
+            <sys_updated_by>ben.hollifield@snc_SHARE</sys_updated_by>
+            <sys_updated_on>2015-05-01 17:19:21</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_section action="INSERT_OR_UPDATE">
+            <caption/>
+            <header>false</header>
+            <name>x_snc_idea_box_comment</name>
+            <roles/>
+            <sys_class_name>sys_ui_section</sys_class_name>
+            <sys_created_by>ben.hollifield@snc_SHARE</sys_created_by>
+            <sys_created_on>2014-12-30 00:01:03</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>54d72da50f513100c8badf2be1050e11</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_name>x_snc_idea_box_comment</sys_name>
+            <sys_overrides/>
+            <sys_package display_value="Idea Box" source="x_snc_idea_box">af5a68590f013100c8badf2be1050ef5</sys_package>
+            <sys_policy/>
+            <sys_scope display_value="Idea Box">af5a68590f013100c8badf2be1050ef5</sys_scope>
+            <sys_update_name>sys_ui_section_54d72da50f513100c8badf2be1050e11</sys_update_name>
+            <sys_updated_by>ben.hollifield@snc_SHARE</sys_updated_by>
+            <sys_updated_on>2014-12-30 00:01:03</sys_updated_on>
+            <sys_user/>
+            <title>false</title>
+            <view display_value="existingcomment" name="existingcomment">58d72da50f513100c8badf2be1050e10</view>
+            <view_name/>
+        </sys_ui_section>
+    </sys_ui_section>
+</record_update>

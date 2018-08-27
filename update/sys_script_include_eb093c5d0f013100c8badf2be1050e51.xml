@@ -1,0 +1,426 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>public</access>
+        <active>true</active>
+        <api_name>x_snc_idea_box.ideaBoxAjax</api_name>
+        <client_callable>true</client_callable>
+        <description>Ajax Script Include to support the Idea Box application</description>
+        <name>ideaBoxAjax</name>
+        <script><![CDATA[var ideaBoxAjax = Class.create();
+ideaBoxAjax.prototype = Object.extendsObject(global.AbstractAjaxProcessor, {
+	//Initialize
+	getInit: function() {
+		var initVals = {
+			debug:gs.getProperty('x_snc_idea_box.debug'),
+			itemsPerPage:gs.getProperty('x_snc_idea_box.items_per_page'),
+			ideaAgeOutDays:gs.getProperty('x_snc_idea_box.idea_age_out_days'),
+			userID:gs.getUserID(),
+			userName:gs.getUserName()
+		};
+		return initVals;
+	},
+	
+	//Return a new page of posts as a JSON formatted string
+	//(Bringing maxResults each time to always keep list semi-real-time)
+	getIdeas: function(){
+		var initVals = this.getInit();
+		var returnObject = {};
+		returnObject.posts = [];
+		var batchSize = parseInt(initVals.itemsPerPage);
+		var boxID = this.getParameter('sysparm_box_id');
+		var startIndex = parseInt(this.getParameter('sysparm_start_index'));
+		var sortOrder = this.getParameter('sysparm_sort');
+		var searchTerm = this.getParameter('sysparm_search_term');
+		
+		//Query for new batch of results
+		var ideaBatch = new GlideRecord("x_snc_idea_box_idea");
+		if (boxID != 'allposts')
+			ideaBatch.addQuery("box", boxID);
+		else if (boxID == 'allposts'){
+			var roledBoxArray = [];
+			var roledBox = new GlideRecord("x_snc_idea_box_box");
+			roledBox.query();
+			while (roledBox.next()) {
+				if (gs.hasRole(roledBox.roles.getDisplayValue()))
+					roledBoxArray.push(roledBox.sys_id.toString());
+			}
+			ideaBatch.addQuery("box", "IN", roledBoxArray.toString());
+			ideaBatch.addQuery("box.selectable", true);
+		}
+		ideaBatch.addQuery("box.active", true);
+		ideaBatch.addQuery("active", true);
+		//add query for age-out of old posts
+		var encQuery = 'sys_updated_onONLast x days@javascript:gs.daysAgoStart(' + initVals.ideaAgeOutDays + ')@javascript:gs.daysAgoEnd(0)';
+		ideaBatch.addEncodedQuery(encQuery);
+		if (searchTerm != '')
+			ideaBatch.addQuery('IR_AND_OR_QUERY', searchTerm);
+		//Set window of items to return for pagination
+		ideaBatch.chooseWindow(startIndex, startIndex+batchSize);
+		//Push Pinned ideas to the top
+		ideaBatch.orderByDesc("pin_to_top");
+		//Set sort order based on UI selection
+		if (sortOrder == 'newest')
+			ideaBatch.orderByDesc('sys_created_on');
+		else if (sortOrder == 'popular')
+			ideaBatch.orderByDesc('vote_count');
+		else if (sortOrder == 'hottest')
+			ideaBatch.orderByDesc('last_comment');
+		ideaBatch.query();
+		while (ideaBatch.next()) {
+			if (ideaBatch.canRead() && gs.hasRole(ideaBatch.box.roles.getDisplayValue())){
+				var singlePostObject = {};
+				singlePostObject = this.formatPost(ideaBatch);
+				returnObject.posts.push(singlePostObject);
+			}
+		}
+		returnObject.maxResults = this._getMaxResults(boxID, encQuery, searchTerm).toString();
+		var returnString = new global.JSON().encode(returnObject);
+		
+		if (initVals.debug == 'true')
+			gs.info('IdeaBox: Returning idea results for ' + boxID + ' starting with index ' + startIndex + ' and using sort order ' + sortOrder + ': ' + returnString);
+		
+		return returnString;
+	},
+	
+	//Return a string representing a single Idea post JSON formatted
+	getPost: function(){
+		var initVals = this.getInit();
+		var returnString = '';
+		var singlePostObject = {};
+		var postID = this.getParameter('sysparm_post_id');
+		//Query for results
+		var idea = new GlideRecord("x_snc_idea_box_idea");
+		if (idea.get(postID)){
+			if (idea.canRead() && gs.hasRole(idea.box.roles.getDisplayValue()))
+				singlePostObject = this.formatPost(idea);
+		}
+		
+		returnString = new global.JSON().encode(singlePostObject);
+		
+		if (initVals.debug == 'true')
+			gs.info('IdeaBox: Returning idea results for ' + postID + ': ' + returnString);
+		
+		return returnString;
+	},
+	
+	//Return a JSON object representing a single Idea post
+	formatPost: function(idea){
+		var initVals = this.getInit();
+		var singlePostObject = {};
+		singlePostObject.title = idea.title.getDisplayValue();
+		singlePostObject.votes = idea.vote_count.toString();
+		singlePostObject.totalVotes = idea.total_vote_count.toString();
+		singlePostObject.comments = idea.comment_count.toString();
+		singlePostObject.creator = idea.submitted_by.getDisplayValue();
+		singlePostObject.created = idea.sys_created_on.getDisplayValue();
+		singlePostObject.id = idea.sys_id.toString();
+		singlePostObject.voteStyle = this._getCurrVote(initVals.userName, idea.sys_id.toString()).toString();
+		singlePostObject.badgeColor = idea.badge_color.toString();
+		singlePostObject.badgeText = idea.badge_text.toString();
+		singlePostObject.boxName = idea.box.getDisplayValue();
+		singlePostObject.boxID = idea.box.sys_id.toString();
+		singlePostObject.allowVotes = idea.box.allow_votes.toString();
+		singlePostObject.allowDownvotes = idea.box.allow_downvotes.toString();
+		singlePostObject.pinned = idea.pin_to_top.toString();
+		singlePostObject.isSubscribed = this.isSubscribedIdea(idea, initVals.userID).toString();
+		return singlePostObject;
+	},
+	
+	//Return comments for a given post as a JSON formatted string
+	getComments: function(){
+		var initVals = this.getInit();
+		var returnObject = {};
+		returnObject.comments = [];
+		var ideaID = this.getParameter('sysparm_idea_id');
+		var sortOrder = this.getParameter('sysparm_sort_order');
+		//Get Idea detail
+		var ideaDetailsObject = {};
+		var idea = new GlideRecord("x_snc_idea_box_idea");
+		if (idea.get(ideaID)) {
+			ideaDetailsObject.description = idea.description.toString() + idea.attachment_links.toString();
+			ideaDetailsObject.canWrite = idea.canWrite().toString();
+			returnObject.idea_details = ideaDetailsObject;
+		}
+		//Get comments
+		var comment = new GlideRecord("x_snc_idea_box_comment");
+		comment.addQuery("active", true);
+		comment.addQuery("idea", ideaID);
+		if (sortOrder == 'newest')
+			comment.orderByDesc("sys_created_on");
+		else if (sortOrder == 'popular')
+			comment.orderByDesc("vote_count");
+		comment.query();
+		while (comment.next()) {
+			var singleCommentObject = this.formatComment(comment);
+			returnObject.comments.push(singleCommentObject);
+		}
+		var returnString = new global.JSON().encode(returnObject);
+		
+		if (initVals.debug == 'true')
+			gs.info('IdeaBox: Returning comment results for ' + ideaID + ': ' + returnString);
+		
+		return returnString;
+	},
+	
+	//Return a JSON object representing a single comment
+	getComment: function(commentID){
+		var initVals = this.getInit();
+		var singleCommentObject = {};
+		//Query for results
+		var comment = new GlideRecord("x_snc_idea_box_comment");
+		if (comment.get(commentID))
+			singleCommentObject = this.formatComment(comment);
+		
+		if (initVals.debug == 'true')
+			gs.info('IdeaBox: Returning comment results for ' + commentID + ': ' + new global.JSON().encode(singleCommentObject));
+		return singleCommentObject;
+	},
+	
+	//Return a JSON object representing a single comment
+	formatComment: function(comment){
+		var initVals = this.getInit();
+		var singleCommentObject = {};
+		singleCommentObject.text = comment.description.getDisplayValue();
+		singleCommentObject.votes = comment.vote_count.toString();
+		singleCommentObject.totalVotes = comment.total_vote_count.toString();
+		singleCommentObject.creator = comment.submitted_by.getDisplayValue();
+		singleCommentObject.created = comment.sys_created_on.getDisplayValue();
+		singleCommentObject.id = comment.sys_id.toString();
+		singleCommentObject.voteStyle = this._getCurrVote(initVals.userName, comment.sys_id.toString()).toString();
+		singleCommentObject.canWrite = comment.canWrite().toString();
+		singleCommentObject.allowVotes = comment.idea.box.allow_votes.toString();
+		singleCommentObject.allowDownvotes = comment.idea.box.allow_downvotes.toString();
+		singleCommentObject.hasAttachments = !comment.attachment_links.nil();
+		singleCommentObject.attachmentLinks = comment.attachment_links.getDisplayValue();
+		return singleCommentObject;
+	},
+	
+	//Add comment to an idea
+	addComment: function(){
+		var initVals = this.getInit();
+		var ideaID = this.getParameter('sysparm_idea_id');
+		var commentText = this.getParameter('sysparm_comment_text');
+		//Add comment to the Idea activity log, so it is searchable
+		//Business rule on Idea table handles Comment record creation
+		//and incrementing comment count
+		var idea = new GlideRecord("x_snc_idea_box_idea");
+		if (idea.get(ideaID)) {
+			idea.comments.setDisplayValue(commentText);
+			idea.last_comment = new GlideDateTime();
+			idea.update();
+		}
+		
+		if (initVals.debug == 'true')
+			gs.info('IdeaBox: Comment added for ' + ideaID + ': ' + commentText);
+		
+		//Get new comment and return for pop into displayed list
+		var returnVal = '';
+		var newComment = new GlideRecord("x_snc_idea_box_comment");
+		newComment.addQuery("idea", ideaID);
+		newComment.orderByDesc("sys_created_on");
+		newComment.setLimit(1);
+		newComment.query();
+		if (newComment.next())
+			returnVal = new global.JSON().encode(this.getComment(newComment.sys_id.toString()));
+		
+		if (initVals.debug == 'true')
+			gs.info('IdeaBox: Returning comment inserted for ' + ideaID + ': ' + newComment.sys_id.toString() + ': ' + returnVal);
+		
+		return returnVal;
+	},
+	
+	//Process a vote. Users can only upvote or downvote a post one
+	//direction either way. Users may change their votes at any time
+	processVote: function(){
+		var initVals = this.getInit();
+		var returnValue = '';
+		var ideaID = this.getParameter('sysparm_idea_id');
+		var voteStyle = this.getParameter('sysparm_vote_style');
+		var vote = new GlideRecord("x_snc_idea_box_vote");
+		vote.addQuery("sys_created_by", initVals.userName);
+		vote.addQuery("idea", ideaID);
+		vote.query();
+		if (vote.next()) {
+			//If user has already voted this voteStyle, they can't vote again
+			//If they are voting opposite, delete their opposing vote
+			//Business rule adjusts vote counts on parent Idea
+			if (vote.type == voteStyle)
+				returnValue = 'FAILURE';
+			else if (vote.type != voteStyle){
+				vote.deleteRecord();
+				returnValue = 'SUCCESS';
+			}
+		}
+		else{
+			//If note vote records found, create a vote record
+			//Business rule adjusts vote counts on parent Idea
+			this._createVote(ideaID, initVals.userID, voteStyle);
+			returnValue = 'SUCCESS';
+		}
+		
+		if (initVals.debug == 'true')
+			gs.info('IdeaBox: Vote processed for ' + ideaID + 'with a result of: ' + returnValue);
+		
+		return returnValue;
+	},
+	
+	//Increment view count of a given article
+	addView: function(){
+		var initVals = this.getInit();
+		var ideaID = this.getParameter('sysparm_idea_id');
+		var idea = new GlideRecord("x_snc_idea_box_idea");
+		if (idea.get(ideaID)) {
+			idea.view_count = idea.view_count + 1;
+			idea.update();
+		}
+		if (initVals.debug == 'true')
+			gs.info('IdeaBox: View added for ' + ideaID);
+	},
+	
+	//Set user subscription preferences for a Box
+	toggleSubscriptionBox: function(){
+		var returnVal = '';
+		var initVals = this.getInit();
+		var boxID = this.getParameter('sysparm_box_id');
+		var userID = this.getParameter('sysparm_user_id');
+		var box = new GlideRecord("x_snc_idea_box_box");
+		if (box.get(boxID)) {
+			//Check if user in list. If not, add 'em
+			var subscriberArray = box.subscribers.toString().split(",");
+			var userFound = false;
+			for (var i=0; i < subscriberArray.length; i++) {
+				if (subscriberArray[i] == userID){
+					subscriberArray.splice(i,1);
+					userFound = true;
+					if (initVals.debug == 'true')
+						gs.info('IdeaBox: Subscriber ' + userID + ' removed from Box ' + boxID);
+					break;
+				}
+			}
+			if (userFound == false){
+				subscriberArray.push(userID);
+				if (initVals.debug == 'true')
+					gs.info('IdeaBox: Subscriber ' + userID + ' added to Box ' + boxID);
+			}
+			box.subscribers = subscriberArray.toString();
+			box.update();
+			returnVal = 'SUCCESS';
+		}
+		else
+			returnVal = 'FAILURE';
+		return returnVal;
+	},
+	
+	//Set user subscription preferences for an Idea
+	toggleSubscriptionIdea: function(){
+		var returnVal = '';
+		var initVals = this.getInit();
+		var ideaID = this.getParameter('sysparm_idea_id');
+		var userID = this.getParameter('sysparm_user_id');
+		var idea = new GlideRecord("x_snc_idea_box_idea");
+		if (idea.get(ideaID)) {
+			//Check if user in list. If not, add 'em
+			var subscriberArray = idea.commenters.toString().split(",");
+			var userFound = false;
+			for (var i=0; i < subscriberArray.length; i++) {
+				if (subscriberArray[i] == userID){
+					subscriberArray.splice(i,1);
+					userFound = true;
+					if (initVals.debug == 'true')
+						gs.info('IdeaBox: Subscriber ' + userID + ' removed from Idea ' + ideaID);
+					break;
+				}
+			}
+			if (userFound == false){
+				subscriberArray.push(userID);
+				if (initVals.debug == 'true')
+					gs.info('IdeaBox: Subscriber ' + userID + ' added to Idea ' + ideaID);
+			}
+			idea.commenters = subscriberArray.toString();
+			idea.update();
+			returnVal = 'SUCCESS';
+		}
+		else
+			returnVal = 'FAILURE';
+		return returnVal;
+	},
+	
+	//Return whether the given user has subscribed to the current Idea
+	isSubscribedIdea: function(post, userID){
+		var returnVal;
+		if (post.commenters.toString().indexOf(userID) > -1)
+			returnVal = true;
+		else
+			returnVal = false;
+		return returnVal;
+	},
+	
+	//Return maximum possible results for this Idea box
+	_getMaxResults: function(boxID, encQuery, searchTerm){
+		var returnValue = 0;
+		var ideaCount = new GlideAggregate("x_snc_idea_box_idea");
+		if (boxID != 'allposts')
+			ideaCount.addQuery("box", boxID);
+		else if (boxID == 'allposts'){
+			var roledBoxArray = [];
+			var roledBox = new GlideRecord("x_snc_idea_box_box");
+			roledBox.query();
+			while (roledBox.next()) {
+				if (gs.hasRole(roledBox.roles.getDisplayValue()))
+					roledBoxArray.push(roledBox.sys_id.toString());
+			}
+			ideaCount.addQuery("box", "IN", roledBoxArray.toString());
+			ideaCount.addQuery("box.selectable", true);
+		}
+		ideaCount.addQuery("box.active", true);
+		ideaCount.addQuery("active", true);
+		ideaCount.addEncodedQuery(encQuery);
+		if (searchTerm != '')
+			ideaCount.addQuery('IR_AND_OR_QUERY', searchTerm);
+		ideaCount.addAggregate('COUNT');
+		ideaCount.query();
+		if (ideaCount.next())
+			returnValue = ideaCount.getAggregate('COUNT');
+		
+		return returnValue;
+	},
+	
+	//Get user's current vote for an idea or comment (novote, upvote, or downvote)
+	_getCurrVote: function(userName, recID){
+		var returnVote = 'novote';
+		var vote;
+		vote = new GlideRecord("x_snc_idea_box_vote");
+		vote.addQuery("idea", recID);
+		vote.addQuery("sys_created_by", userName);
+		vote.query();
+		if (vote.next())
+			returnVote = vote.type;
+		
+		return returnVote;
+	},
+	
+	//Create a new vote record for a given user/idea
+	//Business rule adjusts vote counts on parent Idea
+	_createVote: function(ideaID, userID, voteStyle){
+		var vote = new GlideRecord("x_snc_idea_box_vote");
+		vote.initialize();
+		vote.type = voteStyle;
+		vote.user = userID;
+		vote.idea = ideaID;
+		vote.insert();
+	}
+});]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>ben.hollifield@snc_SHARE</sys_created_by>
+        <sys_created_on>2014-12-16 15:42:54</sys_created_on>
+        <sys_id>eb093c5d0f013100c8badf2be1050e51</sys_id>
+        <sys_mod_count>204</sys_mod_count>
+        <sys_name>ideaBoxAjax</sys_name>
+        <sys_package display_value="Idea Box" source="x_snc_idea_box">af5a68590f013100c8badf2be1050ef5</sys_package>
+        <sys_policy>protected</sys_policy>
+        <sys_scope display_value="Idea Box">af5a68590f013100c8badf2be1050ef5</sys_scope>
+        <sys_update_name>sys_script_include_eb093c5d0f013100c8badf2be1050e51</sys_update_name>
+        <sys_updated_by>ben.hollifield@snc_SHARE</sys_updated_by>
+        <sys_updated_on>2015-10-04 21:42:07</sys_updated_on>
+    </sys_script_include>
+</record_update>

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update>
+    <sys_ui_list parent="" relationship="" sys_domain="af5a68590f013100c8badf2be1050ef5" table="x_snc_idea_box_box" version="2" view="">
+        <sys_ui_list_element action="INSERT_OR_UPDATE">
+            <average_value>false</average_value>
+            <element>name</element>
+            <list_id display_value="x_snc_idea_box_box" element="NULL" name="x_snc_idea_box_box" parent="NULL" relationship="NULL" sys_domain="af5a68590f013100c8badf2be1050ef5" view="Default view">6efad4060f413100c8badf2be1050eee</list_id>
+            <max_value>false</max_value>
+            <min_value>false</min_value>
+            <position>0</position>
+            <sum>false</sum>
+            <sys_created_by>ben.hollifield@snc_SHARE</sys_created_by>
+            <sys_created_on>2014-12-18 21:26:35</sys_created_on>
+            <sys_id>22fad4060f413100c8badf2be1050eef</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>ben.hollifield@snc_SHARE</sys_updated_by>
+            <sys_updated_on>2014-12-18 21:26:35</sys_updated_on>
+        </sys_ui_list_element>
+        <sys_ui_list_element action="INSERT_OR_UPDATE">
+            <average_value>false</average_value>
+            <element>selectable</element>
+            <list_id display_value="x_snc_idea_box_box" element="NULL" name="x_snc_idea_box_box" parent="NULL" relationship="NULL" sys_domain="af5a68590f013100c8badf2be1050ef5" view="Default view">6efad4060f413100c8badf2be1050eee</list_id>
+            <max_value>false</max_value>
+            <min_value>false</min_value>
+            <position>1</position>
+            <sum>false</sum>
+            <sys_created_by>ben.hollifield@snc_SHARE</sys_created_by>
+            <sys_created_on>2014-12-18 21:26:35</sys_created_on>
+            <sys_id>62fad4060f413100c8badf2be1050eef</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>ben.hollifield@snc_SHARE</sys_updated_by>
+            <sys_updated_on>2014-12-18 21:26:35</sys_updated_on>
+        </sys_ui_list_element>
+        <sys_ui_list_element action="INSERT_OR_UPDATE">
+            <average_value>false</average_value>
+            <element>active</element>
+            <list_id display_value="x_snc_idea_box_box" element="NULL" name="x_snc_idea_box_box" parent="NULL" relationship="NULL" sys_domain="af5a68590f013100c8badf2be1050ef5" view="Default view">6efad4060f413100c8badf2be1050eee</list_id>
+            <max_value>false</max_value>
+            <min_value>false</min_value>
+            <position>2</position>
+            <sum>false</sum>
+            <sys_created_by>ben.hollifield@snc_SHARE</sys_created_by>
+            <sys_created_on>2014-12-18 21:26:35</sys_created_on>
+            <sys_id>a2fad4060f413100c8badf2be1050eef</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>ben.hollifield@snc_SHARE</sys_updated_by>
+            <sys_updated_on>2014-12-18 21:26:35</sys_updated_on>
+        </sys_ui_list_element>
+        <sys_ui_list_element action="INSERT_OR_UPDATE">
+            <average_value>false</average_value>
+            <element>sys_created_on</element>
+            <list_id display_value="x_snc_idea_box_box" element="NULL" name="x_snc_idea_box_box" parent="NULL" relationship="NULL" sys_domain="af5a68590f013100c8badf2be1050ef5" view="Default view">6efad4060f413100c8badf2be1050eee</list_id>
+            <max_value>false</max_value>
+            <min_value>false</min_value>
+            <position>3</position>
+            <sum>false</sum>
+            <sys_created_by>ben.hollifield@snc_SHARE</sys_created_by>
+            <sys_created_on>2014-12-18 21:26:35</sys_created_on>
+            <sys_id>e2fad4060f413100c8badf2be1050eef</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>ben.hollifield@snc_SHARE</sys_updated_by>
+            <sys_updated_on>2014-12-18 21:26:35</sys_updated_on>
+        </sys_ui_list_element>
+        <sys_ui_list action="INSERT_OR_UPDATE">
+            <average_value>false</average_value>
+            <element/>
+            <max_value>false</max_value>
+            <min_value>false</min_value>
+            <name>x_snc_idea_box_box</name>
+            <parent/>
+            <position/>
+            <relationship/>
+            <sum>false</sum>
+            <sys_class_name>sys_ui_list</sys_class_name>
+            <sys_created_by>ben.hollifield@snc_SHARE</sys_created_by>
+            <sys_created_on>2014-12-18 21:26:35</sys_created_on>
+            <sys_domain>af5a68590f013100c8badf2be1050ef5</sys_domain>
+            <sys_domain_path/>
+            <sys_id>6efad4060f413100c8badf2be1050eee</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_name>x_snc_idea_box_box</sys_name>
+            <sys_package display_value="Idea Box" source="x_snc_idea_box">af5a68590f013100c8badf2be1050ef5</sys_package>
+            <sys_policy/>
+            <sys_scope display_value="Idea Box">af5a68590f013100c8badf2be1050ef5</sys_scope>
+            <sys_update_name>sys_ui_list_x_snc_idea_box_box_null_6efad4060f413100c8badf2be1050eee</sys_update_name>
+            <sys_updated_by>ben.hollifield@snc_SHARE</sys_updated_by>
+            <sys_updated_on>2014-12-18 21:26:35</sys_updated_on>
+            <sys_user/>
+            <view display_value="Default view" name="NULL">Default view</view>
+            <view_name/>
+        </sys_ui_list>
+    </sys_ui_list>
+</record_update>

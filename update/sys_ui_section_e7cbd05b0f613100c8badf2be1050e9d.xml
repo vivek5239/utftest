@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update>
+    <sys_ui_section caption="Pin &amp; Badge" section_id="e7cbd05b0f613100c8badf2be1050e9d" sys_domain="global" table="x_snc_idea_box_idea" version="3" view="">
+        <sys_ui_annotation action="INSERT_OR_UPDATE">
+            <is_plain_text>true</is_plain_text>
+            <sys_created_by>ben.hollifield@snc_SHARE</sys_created_by>
+            <sys_created_on>2015-01-16 19:18:20</sys_created_on>
+            <sys_id>6eb355930fa13100c8badf2be1050e6b</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>ben.hollifield@snc_SHARE</sys_updated_by>
+            <sys_updated_on>2015-01-16 19:18:20</sys_updated_on>
+            <text>Pin an Idea to keep it at the top of the Idea Box list. Add a Badge to denote a special status for an Idea, like 'Answered' for a technical question or 'Promoted to Development' for an enhancement request.</text>
+            <type display_value="Info Box Blue">753f88a80f930000b12e6903cfe01206</type>
+        </sys_ui_annotation>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>6eb355930fa13100c8badf2be1050e6b</element>
+            <position>0</position>
+            <sys_created_by>ben.hollifield@snc_SHARE</sys_created_by>
+            <sys_created_on>2015-01-16 19:18:20</sys_created_on>
+            <sys_id>aeb355930fa13100c8badf2be1050e6b</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="Pin &amp; Badge" display_value="Pin &amp; Badge" name="x_snc_idea_box_idea" sys_domain="global" view="Default view">e7cbd05b0f613100c8badf2be1050e9d</sys_ui_section>
+            <sys_updated_by>ben.hollifield@snc_SHARE</sys_updated_by>
+            <sys_updated_on>2015-01-16 19:18:20</sys_updated_on>
+            <sys_user/>
+            <type>annotation</type>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>pin_to_top</element>
+            <position>1</position>
+            <sys_created_by>ben.hollifield@snc_SHARE</sys_created_by>
+            <sys_created_on>2015-01-16 19:18:20</sys_created_on>
+            <sys_id>eeb355930fa13100c8badf2be1050e6b</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="Pin &amp; Badge" display_value="Pin &amp; Badge" name="x_snc_idea_box_idea" sys_domain="global" view="Default view">e7cbd05b0f613100c8badf2be1050e9d</sys_ui_section>
+            <sys_updated_by>ben.hollifield@snc_SHARE</sys_updated_by>
+            <sys_updated_on>2015-01-16 19:18:20</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>badge_color</element>
+            <position>2</position>
+            <sys_created_by>ben.hollifield@snc_SHARE</sys_created_by>
+            <sys_created_on>2015-01-16 19:18:20</sys_created_on>
+            <sys_id>22b355930fa13100c8badf2be1050e6c</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="Pin &amp; Badge" display_value="Pin &amp; Badge" name="x_snc_idea_box_idea" sys_domain="global" view="Default view">e7cbd05b0f613100c8badf2be1050e9d</sys_ui_section>
+            <sys_updated_by>ben.hollifield@snc_SHARE</sys_updated_by>
+            <sys_updated_on>2015-01-16 19:18:20</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>badge_text</element>
+            <position>3</position>
+            <sys_created_by>ben.hollifield@snc_SHARE</sys_created_by>
+            <sys_created_on>2015-01-16 19:18:20</sys_created_on>
+            <sys_id>62b355930fa13100c8badf2be1050e6c</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="Pin &amp; Badge" display_value="Pin &amp; Badge" name="x_snc_idea_box_idea" sys_domain="global" view="Default view">e7cbd05b0f613100c8badf2be1050e9d</sys_ui_section>
+            <sys_updated_by>ben.hollifield@snc_SHARE</sys_updated_by>
+            <sys_updated_on>2015-01-16 19:18:20</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_section action="INSERT_OR_UPDATE">
+            <caption>Pin &amp; Badge</caption>
+            <header>false</header>
+            <name>x_snc_idea_box_idea</name>
+            <roles/>
+            <sys_class_name>sys_ui_section</sys_class_name>
+            <sys_created_by>ben.hollifield@snc_SHARE</sys_created_by>
+            <sys_created_on>2015-01-16 15:14:00</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>e7cbd05b0f613100c8badf2be1050e9d</sys_id>
+            <sys_mod_count>1</sys_mod_count>
+            <sys_name>Pin &amp; Badge</sys_name>
+            <sys_overrides/>
+            <sys_package display_value="Idea Box" source="x_snc_idea_box">af5a68590f013100c8badf2be1050ef5</sys_package>
+            <sys_policy/>
+            <sys_scope display_value="Idea Box">af5a68590f013100c8badf2be1050ef5</sys_scope>
+            <sys_update_name>sys_ui_section_e7cbd05b0f613100c8badf2be1050e9d</sys_update_name>
+            <sys_updated_by>ben.hollifield@snc_SHARE</sys_updated_by>
+            <sys_updated_on>2015-01-16 19:18:45</sys_updated_on>
+            <sys_user/>
+            <title>false</title>
+            <view display_value="Default view" name="NULL">Default view</view>
+            <view_name/>
+        </sys_ui_section>
+    </sys_ui_section>
+</record_update>

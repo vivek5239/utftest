@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_ui_policy_action">
+    <sys_ui_policy_action action="INSERT_OR_UPDATE">
+        <cleared>false</cleared>
+        <disabled>ignore</disabled>
+        <field>allow_downvotes</field>
+        <mandatory>ignore</mandatory>
+        <sys_class_name>sys_ui_policy_action</sys_class_name>
+        <sys_created_by>ben.hollifield@snc_SHARE</sys_created_by>
+        <sys_created_on>2015-01-20 02:19:36</sys_created_on>
+        <sys_id>57d0d6d40f713100c8badf2be1050ed7</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>allow_downvotes</sys_name>
+        <sys_package display_value="Idea Box" source="x_snc_idea_box">af5a68590f013100c8badf2be1050ef5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Idea Box">af5a68590f013100c8badf2be1050ef5</sys_scope>
+        <sys_update_name>sys_ui_policy_action_57d0d6d40f713100c8badf2be1050ed7</sys_update_name>
+        <sys_updated_by>ben.hollifield@snc_SHARE</sys_updated_by>
+        <sys_updated_on>2015-01-20 02:19:36</sys_updated_on>
+        <table>x_snc_idea_box_box</table>
+        <ui_policy display_value="IdeaBox - Hide downvotes">a0c0d6d40f713100c8badf2be1050ebf</ui_policy>
+        <visible>true</visible>
+    </sys_ui_policy_action>
+</record_update>
